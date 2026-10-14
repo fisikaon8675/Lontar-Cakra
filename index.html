@@ -1,0 +1,3582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arya & Lontar Cakra: Jagat Parahyangan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-light: #fde047;
+            --gold-mid: #eab308;
+            --gold-dark: #854d0e;
+            --wood-dark: #271206;
+            --wood-mid: #451a03;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #090502;
+            color: #fef3c7;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .font-nusantara {
+            font-family: 'Cinzel Decorative', cursive;
+        }
+        /* Batik & Wayang Ornate Borders */
+        .lontar-panel {
+            background: linear-gradient(135deg, #2e1505 0%, #1a0b02 100%);
+            border: 2px solid #ca8a04;
+            box-shadow: 0 0 25px rgba(234, 179, 8, 0.25), inset 0 0 15px rgba(0, 0, 0, 0.8);
+        }
+        .lontar-scroll {
+            background: linear-gradient(180deg, #fef08a 0%, #fde047 100%);
+            color: #451a03;
+            border: 3px solid #854d0e;
+        }
+        .btn-wayang {
+            background: linear-gradient(180deg, #ca8a04 0%, #854d0e 100%);
+            border: 1px solid #fef08a;
+            color: #fffbeb;
+            transition: all 0.2s ease;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+        .btn-wayang:hover:not(:disabled) {
+            background: linear-gradient(180deg, #eab308 0%, #a16207 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(234, 179, 8, 0.4);
+        }
+        .btn-wayang:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .btn-wayang:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            filter: grayscale(70%);
+        }
+        /* Custom Range Slider for Lontar Cakra */
+        input[type=range].cakra-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range].cakra-slider::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #451a03;
+            border-radius: 4px;
+            border: 1px solid #ca8a04;
+        }
+        input[type=range].cakra-slider::-webkit-slider-thumb {
+            height: 22px;
+            width: 22px;
+            border-radius: 50%;
+            background: #fde047;
+            border: 2px solid #854d0e;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -8px;
+            box-shadow: 0 0 8px #eab308;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.6)); }
+            50% { filter: drop-shadow(0 0 14px rgba(250, 204, 21, 1)); }
+        }
+        .cakra-glow {
+            animation: pulseGlow 2.5s infinite;
+        }
+    </style>
+</head>
+<body class="w-screen h-screen flex flex-col justify-between relative">
+
+    <header class="w-full z-20 px-4 py-2.5 flex flex-wrap items-center justify-between bg-stone-950/90 border-b border-yellow-700/60 backdrop-blur-md">
+        <!-- Player Identity & Location -->
+        <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-full bg-gradient-to-br from-amber-500 to-yellow-900 p-0.5 shadow-lg cakra-glow flex items-center justify-center">
+                <svg class="w-8 h-8 text-amber-100" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L15 8L21 9L16.5 14L18 20L12 17L6 20L7.5 14L3 9L9 8L12 2Z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="font-nusantara text-base sm:text-lg text-amber-300 tracking-wider leading-none">ARYA</h1>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-amber-900/70 border border-amber-500/40 text-amber-200">Cantrik Dalang</span>
+                </div>
+                <p id="hud-location" class="text-xs sm:text-sm text-amber-100/80 font-medium mt-0.5">📍 Hub Utama: Dermaga Gunungan</p>
+            </div>
+        </div>
+
+        <!-- Crystals & Relics Progress -->
+        <div class="flex items-center gap-2 sm:gap-4 mt-2 sm:mt-0">
+            <!-- Kristal Cakra Karsa Counter -->
+            <div class="flex items-center gap-2 bg-stone-900/90 border border-amber-600/50 px-3 py-1.5 rounded-lg">
+                <span class="text-xs text-amber-200/80 hidden md:inline">Kristal Cakra Karsa:</span>
+                <div id="hud-crystals" class="flex items-center gap-1">
+                    <!-- Populated by JS -->
+                </div>
+                <span id="hud-crystal-count" class="text-xs font-bold text-amber-400 ml-1">0/5</span>
+            </div>
+
+            <!-- Action Buttons -->
+            <button id="btn-open-map" onclick="toggleWorldMapModal()" class="btn-wayang px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5">
+                <span>🗺️</span> <span class="hidden sm:inline">Peta Nusantara</span>
+            </button>
+            <button id="btn-open-cakra" onclick="openLontarCakra()" class="btn-wayang px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 hidden">
+                <span>⚙️</span> <span>Lontar Cakra</span>
+            </button>
+            <button onclick="openSaveInstructionModal()" class="bg-stone-800 hover:bg-stone-700 text-amber-300 border border-amber-600/40 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1" title="Unduh & Simpan ke Folder Game Fisika">
+                <span>💾</span> <span class="hidden lg:inline">Simpan File</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="relative flex-1 w-full h-full overflow-hidden bg-stone-950 flex items-center justify-center">
+        <canvas id="gameCanvas" class="w-full h-full block"></canvas>
+
+        <!-- Floating Contextual Prompt (E / Space to Interact) -->
+        <div id="interaction-prompt" class="hidden absolute bottom-24 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+            <div class="lontar-panel px-4 py-2 rounded-full flex items-center gap-2 animate-bounce">
+                <span class="w-6 h-6 rounded-full bg-amber-400 text-stone-950 font-bold text-xs flex items-center justify-center">E</span>
+                <span id="interaction-text" class="text-xs sm:text-sm font-semibold text-amber-200">Bicara dengan NPC</span>
+            </div>
+        </div>
+
+        <!-- Objective Banner Top-Left inside Canvas -->
+        <div class="absolute top-3 left-4 z-10 max-w-xs sm:max-w-md pointer-events-none">
+            <div class="bg-stone-950/80 border-l-4 border-amber-500 px-3 py-2 rounded-r-lg backdrop-blur-sm">
+                <p class="text-[11px] uppercase tracking-wider text-amber-400 font-bold">Misi Saat Ini</p>
+                <p id="hud-objective" class="text-xs sm:text-sm text-amber-100 leading-snug">Temui Ki Dalang atau naik ke Perahu Panji untuk berlayar ke Danau Citarum.</p>
+            </div>
+        </div>
+
+        <!-- Relic Inventory Bar Top-Right inside Canvas -->
+        <div class="absolute top-3 right-4 z-10 flex flex-col items-end gap-1.5 pointer-events-none">
+            <div class="bg-stone-950/80 border border-amber-700/50 px-3 py-1.5 rounded-lg backdrop-blur-sm flex items-center gap-2">
+                <span class="text-[11px] text-amber-300/80">Pusaka Terbuka:</span>
+                <div id="hud-relics" class="flex gap-1.5 text-sm">
+                    <span class="opacity-30" title="Kemudi Aji Jalasegara">☸️</span>
+                    <span class="opacity-30" title="Lontar Torsi">📜</span>
+                    <span class="opacity-30" title="Peluncur Inersia">🏹</span>
+                    <span class="opacity-30" title="Kristal Tumbukan">💎</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="dialogue-modal" class="hidden absolute bottom-16 sm:bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-3xl z-30">
+            <div class="lontar-panel rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row gap-4 items-center sm:items-start">
+                <!-- NPC Avatar Badge -->
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-amber-950 border-2 border-amber-500 flex flex-col items-center justify-center shrink-0 shadow-inner">
+                    <span id="npc-avatar" class="text-3xl sm:text-4xl">🎭</span>
+                    <span id="npc-region-tag" class="text-[10px] text-amber-300 font-bold uppercase mt-1">Legenda</span>
+                </div>
+                <!-- Dialogue Content -->
+                <div class="flex-1 text-center sm:text-left">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-amber-700/50 pb-1.5 mb-2">
+                        <h3 id="npc-name" class="font-nusantara text-lg text-amber-300 font-bold">Nama Tokoh</h3>
+                        <span id="npc-physics-topic" class="text-xs bg-amber-900/80 text-amber-200 px-2.5 py-0.5 rounded-full border border-amber-500/40">Materi Fisika</span>
+                    </div>
+                    <p id="npc-dialogue-text" class="text-xs sm:text-sm text-amber-100/95 leading-relaxed mb-4"></p>
+                    <div class="flex flex-wrap justify-center sm:justify-end gap-2">
+                        <button onclick="closeDialogueModal()" class="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-200 text-xs font-semibold border border-stone-600">
+                            Tutup (Esc)
+                        </button>
+                        <button id="btn-dialogue-action" onclick="triggerDialogueAction()" class="btn-wayang px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1.5">
+                            <span>⚡</span> <span id="btn-dialogue-action-text">Aktifkan Lontar Cakra</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="cakra-modal" class="hidden fixed inset-0 z-40 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+            <div class="lontar-panel w-full max-w-4xl rounded-2xl overflow-hidden flex flex-col max-h-[92vh]">
+                <!-- Modal Header -->
+                <div class="bg-gradient-to-r from-amber-950 via-yellow-900/60 to-amber-950 px-5 py-3.5 border-b border-amber-500/60 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-2xl cakra-glow">☸️</span>
+                        <div>
+                            <h2 id="cakra-title" class="font-nusantara text-base sm:text-xl text-amber-300 font-bold">LONTAR CAKRA: SIMULASI FISIKA</h2>
+                            <p id="cakra-subtitle" class="text-xs text-amber-200/80">Atur besaran fisika hingga hukum alam kembali seimbang</p>
+                        </div>
+                    </div>
+                    <button onclick="closeLontarCakra()" class="w-8 h-8 rounded-lg bg-stone-900 hover:bg-red-900/80 text-amber-200 border border-amber-600/50 flex items-center justify-center font-bold">✕</button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-4 sm:p-6 overflow-y-auto grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+                    <!-- Left Column: Visual Diagram & Live Formula -->
+                    <div class="lg:col-span-6 flex flex-col gap-3">
+                        <div class="relative w-full h-52 sm:h-60 bg-stone-950 rounded-xl border-2 border-amber-700/70 overflow-hidden">
+                            <canvas id="cakraSimCanvas" class="w-full h-full block"></canvas>
+                            <div id="cakra-status-badge" class="absolute top-2.5 right-2.5 px-3 py-1 rounded-full text-xs font-bold bg-red-900/90 text-red-200 border border-red-400">
+                                Belum Seimbang
+                            </div>
+                        </div>
+
+                        <!-- Formula Box -->
+                        <div class="lontar-scroll p-3.5 rounded-xl shadow-inner">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-amber-950">📜 Rumus Lontar Kuno:</span>
+                                <span id="cakra-formula-badge" class="text-xs font-bold bg-amber-900 text-amber-100 px-2 py-0.5 rounded">Hukum Alam</span>
+                            </div>
+                            <p id="cakra-formula-text" class="text-xs sm:text-sm font-bold text-stone-900 font-mono bg-amber-100/70 p-2 rounded border border-amber-800/30"></p>
+                            <p id="cakra-story-hint" class="text-xs text-amber-950 mt-2 leading-snug font-medium"></p>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Sliders & Real-time Telemetry -->
+                    <div class="lg:col-span-6 flex flex-col gap-4">
+                        <div id="cakra-sliders-container" class="flex flex-col gap-3.5 bg-stone-900/90 p-4 rounded-xl border border-amber-700/40">
+                            <!-- Dynamically generated sliders -->
+                        </div>
+
+                        <!-- Live Telemetry Output -->
+                        <div class="bg-stone-950 p-4 rounded-xl border border-amber-600/50 flex flex-col gap-2">
+                            <h4 class="text-xs uppercase tracking-wider text-amber-400 font-bold">Hasil Pengukuran Lontar Cakra</h4>
+                            <div id="cakra-telemetry" class="grid grid-cols-2 gap-2 text-xs sm:text-sm">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Feedback & Stabilize Action -->
+                        <div id="cakra-feedback-box" class="text-xs sm:text-sm px-3.5 py-2.5 rounded-lg bg-amber-950/80 border border-amber-600/40 text-amber-200">
+                            Geser variabel di atas untuk mencari titik kesetimbangan fisika.
+                        </div>
+
+                        <div class="flex justify-end gap-3">
+                            <button onclick="resetCakraSliders()" class="px-4 py-2 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-200 text-xs sm:text-sm font-semibold border border-stone-600">
+                                Reset Variabel
+                            </button>
+                            <button id="btn-stabilize-cakra" onclick="completeCurrentMapPuzzle()" disabled class="btn-wayang px-5 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2">
+                                <span>✨</span> <span>Kunci Besaran & Pulihkan Takdir!</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="world-map-modal" class="hidden fixed inset-0 z-40 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+            <div class="lontar-panel w-full max-w-4xl rounded-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                <div class="bg-gradient-to-r from-amber-950 via-yellow-900/60 to-amber-950 px-5 py-3.5 border-b border-amber-500/60 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-2xl">⛵</span>
+                        <div>
+                            <h2 class="font-nusantara text-base sm:text-xl text-amber-300 font-bold">PETA LAYAR PERAHU PANJI — JAGAT PARAHYANGAN</h2>
+                            <p class="text-xs text-amber-200/80">Pilih wilayah Nusantara untuk memulihkan Kutukan Sang Kala</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleWorldMapModal()" class="w-8 h-8 rounded-lg bg-stone-900 hover:bg-red-900/80 text-amber-200 border border-amber-600/50 flex items-center justify-center font-bold">✕</button>
+                </div>
+
+                <div class="p-4 sm:p-6 overflow-y-auto flex flex-col gap-4">
+                    <!-- Map Progression Tree Diagram -->
+                    <div id="map-nodes-grid" class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="save-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="lontar-panel max-w-md w-full rounded-2xl p-5 flex flex-col gap-4">
+                <div class="flex items-center justify-between border-b border-amber-700/50 pb-2">
+                    <h3 class="font-nusantara text-lg text-amber-300 font-bold">💾 Simpan ke Folder "Game Fisika"</h3>
+                    <button onclick="closeSaveInstructionModal()" class="text-amber-300 hover:text-white font-bold">✕</button>
+                </div>
+                <p class="text-xs sm:text-sm text-amber-100/90 leading-relaxed">
+                    Anda dapat mengunduh file mandiri game ini (<code class="text-amber-300 bg-stone-900 px-1.5 py-0.5 rounded">arya_lontar_cakra.html</code>) dan juga berkas progres permainan (<code class="text-amber-300 bg-stone-900 px-1.5 py-0.5 rounded">progres_arya.json</code>) untuk disimpan ke dalam folder <strong>"Game Fisika"</strong> di perangkat atau Google Drive Anda.
+                </p>
+                <div class="flex flex-col gap-2.5">
+                    <button onclick="downloadStandaloneGameFile()" class="btn-wayang w-full py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2">
+                        <span>📥</span> <span>Unduh File Game HTML (arya_lontar_cakra.html)</span>
+                    </button>
+                    <button onclick="downloadProgressJSON()" class="bg-stone-800 hover:bg-stone-700 text-amber-200 border border-amber-600/50 w-full py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-2">
+                        <span>📊</span> <span>Unduh Data Progres (progres_arya.json)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full z-20 px-4 py-2 bg-stone-950/95 border-t border-yellow-800/60 flex items-center justify-between">
+        <!-- Mobile Touch Controls -->
+        <div class="flex items-center gap-2">
+            <button id="btn-left" class="w-11 h-10 rounded-xl bg-stone-800 active:bg-amber-700 border border-amber-600/50 text-amber-200 font-bold text-lg flex items-center justify-center shadow">◀</button>
+            <button id="btn-right" class="w-11 h-10 rounded-xl bg-stone-800 active:bg-amber-700 border border-amber-600/50 text-amber-200 font-bold text-lg flex items-center justify-center shadow">▶</button>
+            <button id="btn-jump" class="px-3.5 h-10 rounded-xl bg-stone-800 active:bg-amber-700 border border-amber-600/50 text-amber-200 font-bold text-xs sm:text-sm flex items-center justify-center shadow gap-1">
+                <span>▲</span> <span class="hidden sm:inline">Lompat</span>
+            </button>
+        </div>
+
+        <!-- Desktop Keyboard Hint -->
+        <div class="hidden md:flex items-center gap-4 text-xs text-amber-200/70">
+            <span><strong class="text-amber-300">[A / D / ◀ ▶]</strong> Jalan</span>
+            <span><strong class="text-amber-300">[W / Spasi]</strong> Lompat</span>
+            <span><strong class="text-amber-300">[E]</strong> Interaksi NPC / Portal</span>
+            <span><strong class="text-amber-300">[C]</strong> Lontar Cakra</span>
+            <span><strong class="text-amber-300">[M]</strong> Peta Nusantara</span>
+        </div>
+
+        <!-- Quick Interact Button for Touchscreens -->
+        <div class="flex items-center gap-2">
+            <button onclick="handleInteractKey()" class="btn-wayang px-3.5 h-10 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5">
+                <span>💬</span> <span>Interaksi (E)</span>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        /**
+         * DATA & KONFIGURASI ALUR CERITA NUSANTARA (5 MAP + HUB DERMAGA GUNUNGAN)
+         */
+        const MAPS_DATA = {
+            hub: {
+                id: 'hub',
+                name: 'Hub Utama: Dermaga Gunungan',
+                shortName: 'Dermaga Gunungan',
+                npcName: 'Ki Dalang Sepuh',
+                npcAvatar: '🧙‍♂️',
+                physicsTopic: 'Pengantar Lontar Cakra & Hukum Alam',
+                unlocked: true,
+                completed: false,
+                skyTop: '#1e1b4b',
+                skyBottom: '#451a03',
+                groundColor: '#271206',
+                objectiveUnfinished: 'Bicara dengan Ki Dalang atau hampiri Perahu Panji di dermaga kanan untuk berlayar ke Map 1 (Danau Citarum).',
+                objectiveFinished: 'Seluruh 5 Kristal Cakra Karsa telah terkumpul! Jagat Parahyangan telah pulih!',
+                dialogueIntro: 'Selamat datang di Dermaga Gunungan, Arya! Gerhana Sang Kala telah mengacaukan hukum fisika di Nusantara. Gunakan gawai kuno "Lontar Cakra" milikmu dan naiklah ke Perahu Panji di ujung dermaga untuk menolong Sangkuriang, Bima, Roro Jonggrang, dan Malin Kundang!',
+                dialogueSolved: 'Luar biasa, Cantrikku! Kelima Kristal Cakra Karsa kini bersinar memulihkan jagat pewayangan!'
+            },
+            map1: {
+                id: 'map1',
+                order: 1,
+                name: 'Map 1: Danau Citarum & Benteng Sumbi',
+                shortName: 'Danau Citarum',
+                npcName: 'Sangkuriang & Dayang Sumbi',
+                npcAvatar: '🛶',
+                physicsTopic: 'Mekanika Fluida: Hukum Archimedes & Debit Air',
+                relicName: 'Kemudi Aji Jalasegara',
+                relicIcon: '☸️',
+                unlocked: true,
+                completed: false,
+                skyTop: '#0f172a',
+                skyBottom: '#0369a1',
+                groundColor: '#1e293b',
+                objectiveUnfinished: 'Temui Sangkuriang di tepi Danau Citarum dan gunakan Lontar Cakra untuk mengapungkan perahu raksasanya.',
+                objectiveFinished: 'Perahu Sangkuriang telah terapung dan debit bendungan stabil! Masuki Portal Timur atau buka Peta menuju Samudra Raya.',
+                dialogueIntro: 'Celaka, Arya! Kutukan Kala membuat massa jenis kayu perahu raksasaku membengkak sehingga tenggelam di Danau Citarum, dan debit air katrol bendungan tidak seimbang! Tolong gunakan Lontar Cakra untuk mengatur Volume Lambung Perahu dan Kecepatan Aliran Bendungan!',
+                dialogueSolved: 'Hukum Archimedes kembali bekerja! Gaya apung (Fa) kini melampaui berat perahu dan debit bendungan mencapai 24 m³/s. Terimalah "Kemudi Aji Jalasegara" untuk menembus arus Samudra Raya!',
+                puzzle: {
+                    title: 'Mekanika Fluida: Perahu Sangkuriang & Bendungan Citarum',
+                    formulaBadge: 'Fa = ρ·g·V  &  Q = A·v',
+                    formulaText: 'Syarat Mengapung: Gaya Apung (Fa = ρ_air × g × V) ≥ Berat Perahu (W = 50.000 N) DAN Debit Bendungan (Q = A × v) = 24 m³/s',
+                    hint: 'Massa jenis air danau ρ = 1.000 kg/m³ dan g = 10 m/s². Atur Volume Lambung (V) minimal 5 m³ agar Fa ≥ 50.000 N, lalu sesuaikan Luas Penampang (A) dan Kecepatan Air (v) agar hasil kali A × v tepat 24 m³/s!',
+                    sliders: [
+                        { id: 'vol', label: 'Volume Lambung Terendam (V)', min: 1, max: 8, step: 0.5, val: 2.5, unit: 'm³' },
+                        { id: 'area', label: 'Luas Pintu Bendungan (A)', min: 2, max: 8, step: 1, val: 3, unit: 'm²' },
+                        { id: 'vel', label: 'Kecepatan Aliran Air (v)', min: 2, max: 10, step: 1, val: 4, unit: 'm/s' }
+                    ],
+                    evaluate: (vals) => {
+                        const Fa = 1000 * 10 * vals.vol; // N
+                        const W = 50000; // N
+                        const Q = vals.area * vals.vel; // m3/s
+                        const floatOk = Fa >= W;
+                        const debitOk = Math.abs(Q - 24) < 0.01;
+                        return {
+                            solved: floatOk && debitOk,
+                            telemetry: [
+                                { label: 'Gaya Apung (Fa)', value: `${Fa.toLocaleString('id-ID')} N`, ok: floatOk },
+                                { label: 'Berat Perahu (W)', value: `50.000 N`, ok: true },
+                                { label: 'Debit Air (Q = A·v)', value: `${Q} m³/s (Target: 24)`, ok: debitOk },
+                                { label: 'Status Lambung', value: floatOk ? 'Terapung Kokoh' : 'Tenggelam!', ok: floatOk }
+                            ],
+                            feedback: (floatOk && debitOk)
+                                ? 'SEIMBANG! Gaya apung mampu menahan beban perahu dan debit bendungan Citarum tepat 24 m³/s!'
+                                : (!floatOk ? 'Gaya Apung (Fa) masih kurang dari 50.000 N! Perbesar Volume Lambung (V ≥ 5 m³).' : 'Perahu sudah mengapung, sekarang atur A × v agar Debit Air (Q) tepat 24 m³/s!')
+                        };
+                    }
+                }
+            },
+            map2: {
+                id: 'map2',
+                order: 2,
+                name: 'Map 2: Dasar Samudra Raya',
+                shortName: 'Samudra Raya',
+                npcName: 'Bima (Werkudara) & Dewa Ruci',
+                npcAvatar: '🌊',
+                physicsTopic: 'Vektor Gaya, Hambatan Viskositas & Dinamika',
+                relicName: 'Lontar Torsi',
+                relicIcon: '📜',
+                unlocked: false,
+                completed: false,
+                skyTop: '#022c22',
+                skyBottom: '#0f766e',
+                groundColor: '#115e59',
+                objectiveUnfinished: 'Bantu Bima menembus arus naga laut dengan menyeimbangkan Resultan Vektor Gaya Dorong menuju Dewa Ruci.',
+                objectiveFinished: 'Bima berhasil mencapai keheningan Dewa Ruci! Lontar Torsi telah didapat untuk membuka Map 3 (Dataran Boko).',
+                dialogueIntro: 'Wahai Arya! Aku sedang mencari Tirta Perwita Suci, namun pusaran Naga Nemburnawa dan viskositas samudra menahan langkahku dengan gaya hambat 600 N! Aturlah Gaya Dorong Aji Bayu dan Sudut Vektornya di Lontar Cakra agar Resultan Gaya Maju tepat 200 N!',
+                dialogueSolved: 'Hooo! Dengan sudut vektor 0° dan gaya dorong 800 N, resultan gaya ΣF = 200 N membawaku langsung ke hadapan Dewa Ruci! Ambillah "Lontar Torsi" ini untuk menggerakkan batu Candi Sewu!',
+                puzzle: {
+                    title: 'Dinamika Vektor & Viskositas: Bima Menembus Samudra',
+                    formulaBadge: 'ΣFx = F·cos(θ) - F_viskos',
+                    formulaText: 'Target Resultan Gaya Maju: ΣFx = F_dorong × cos(θ) - F_hambat = 200 N',
+                    hint: 'Gaya hambat arus & viskositas air (F_hambat) = 600 N. Agar ΣFx tepat 200 N, pastikan F_dorong × cos(θ) bernilai 800 N (Misal: F_dorong = 800 N dengan Sudut θ = 0°)!',
+                    sliders: [
+                        { id: 'force', label: 'Gaya Dorong Aji Bayu (F)', min: 400, max: 1000, step: 50, val: 550, unit: 'N' },
+                        { id: 'angle', label: 'Sudut Kemiringan Vektor (θ)', min: 0, max: 60, step: 30, val: 60, unit: '°' },
+                        { id: 'drag', label: 'Redaman Viskositas Air (F_hambat)', min: 600, max: 600, step: 50, val: 600, unit: 'N' }
+                    ],
+                    evaluate: (vals) => {
+                        const rad = (vals.angle * Math.PI) / 180;
+                        const Fx = Math.round(vals.force * Math.cos(rad));
+                        const netF = Fx - vals.drag;
+                        const solved = Math.abs(netF - 200) <= 5;
+                        return {
+                            solved,
+                            telemetry: [
+                                { label: 'Komponen Maju (F·cos θ)', value: `${Fx} N`, ok: Fx === 800 },
+                                { label: 'Hambatan Viskositas', value: `${vals.drag} N`, ok: true },
+                                { label: 'Resultan Gaya (ΣFx)', value: `${netF} N (Target: 200 N)`, ok: solved },
+                                { label: 'Status Gerak Bima', value: solved ? 'Menembus Pusaran!' : (netF < 0 ? 'Terseret Mundur!' : 'Belum Tepat'), ok: solved }
+                            ],
+                            feedback: solved
+                                ? 'SEIMBANG! Vektor gaya dorong Bima berhasil menaklukkan arus viskositas samudra menuju Dewa Ruci!'
+                                : `Resultan gaya saat ini ${netF} N. Atur Gaya Dorong = 800 N dan Sudut Vektor θ = 0° agar menghasilkan ΣFx = 200 N!`
+                        };
+                    }
+                }
+            },
+            map3: {
+                id: 'map3',
+                order: 3,
+                name: 'Map 3: Dataran Boko & Candi Sewu',
+                shortName: 'Candi Sewu',
+                npcName: 'Roro Jonggrang & Bandung Bondowoso',
+                npcAvatar: '🛕',
+                physicsTopic: 'Kesetimbangan Benda Tegar & Torsi (τ = F·r)',
+                relicName: 'Peluncur Inersia',
+                relicIcon: '🏹',
+                unlocked: false,
+                completed: false,
+                skyTop: '#31102f',
+                skyBottom: '#7c2d12',
+                groundColor: '#292524',
+                objectiveUnfinished: 'Seimbangkan Torsi katrol pengangkat monolith Candi Sewu agar struktur candi berdiri tegak.',
+                objectiveFinished: 'Monolith Candi Sewu berdiri kokoh dalam kesetimbangan rotasi! Peluncur Inersia siap membawa Arya ke Pantai Air Manis.',
+                dialogueIntro: 'Arya, batu-batu monolith Candi Sewu terus runtuh karena momen gaya (torsi) tuas pengangkatnya timpang! Batu utama di lengan kiri menghasilkan torsi lawan sebesar 1.200 N·m. Aturlah Massa Penyeimbang dan Panjang Lengan Tuas Kanan di Lontar Cakra agar Στ = 0!',
+                dialogueSolved: 'Kesetimbangan benda tegar tercapai! Candi-candi berdiri tegak tanpa miring sedikit pun. Terimalah "Peluncur Inersia" untuk melintasi lautan menuju Pesisir Air Manis!',
+                puzzle: {
+                    title: 'Kesetimbangan Benda Tegar: Monolith Candi Sewu',
+                    formulaBadge: 'Στ = τ_kiri - τ_kanan = 0',
+                    formulaText: 'Syarat Setimbang Rotasi: Torsi Kanan (τ = m × g × r) = Torsi Batu Candi (1.200 N·m)',
+                    hint: 'Percepatan gravitasi g = 10 m/s². Agar τ_kanan = 1.200 N·m, atur Massa Beban (m) dan Lengan Kuasa (r) sehingga m × 10 × r = 1.200 (Contoh: m = 40 kg dan r = 3 m, atau m = 30 kg dan r = 4 m)!',
+                    sliders: [
+                        { id: 'mass', label: 'Massa Batu Penyeimbang (m)', min: 10, max: 60, step: 10, val: 20, unit: 'kg' },
+                        { id: 'arm', label: 'Panjang Lengan Tuas Kanan (r)', min: 1, max: 5, step: 1, val: 2, unit: 'm' }
+                    ],
+                    evaluate: (vals) => {
+                        const torqueLeft = 1200; // N.m
+                        const torqueRight = vals.mass * 10 * vals.arm;
+                        const diff = torqueRight - torqueLeft;
+                        const solved = diff === 0;
+                        return {
+                            solved,
+                            telemetry: [
+                                { label: 'Torsi Batu Candi (τ_kiri)', value: `1.200 N·m`, ok: true },
+                                { label: 'Gaya Berat Kuasa (W = m·g)', value: `${vals.mass * 10} N`, ok: true },
+                                { label: 'Torsi Penyeimbang (τ_kanan)', value: `${torqueRight.toLocaleString('id-ID')} N·m`, ok: solved },
+                                { label: 'Resultan Torsi (Στ)', value: `${diff} N·m (Target: 0)`, ok: solved }
+                            ],
+                            feedback: solved
+                                ? 'SEIMBANG! Στ = 0 N·m! Monolith Candi Sewu terangkat presisi dan berdiri kokoh!'
+                                : `Torsi kanan saat ini ${torqueRight} N·m. Sesuaikan Massa (m) dan Lengan (r) agar m × 10 × r = 1.200 N·m!`
+                        };
+                    }
+                }
+            },
+            map4: {
+                id: 'map4',
+                order: 4,
+                name: 'Map 4: Pesisir Pantai Air Manis',
+                shortName: 'Pantai Air Manis',
+                npcName: 'Ibu Malin & Nahkoda Kapal',
+                npcAvatar: '⚓',
+                physicsTopic: 'Momentum, Impuls (I = F·Δt) & Hukum Newton III',
+                relicName: 'Kristal Tumbukan',
+                relicIcon: '💎',
+                unlocked: false,
+                completed: false,
+                skyTop: '#1e1b4b',
+                skyBottom: '#9a3412',
+                groundColor: '#451a03',
+                objectiveUnfinished: 'Redam momentum hantaman ombak kapal Malin Kundang menggunakan peredam impuls di Lontar Cakra.',
+                objectiveFinished: 'Impuls gelombang berhasil diredam! Jalur menuju Map Final (Panggung Pustaka Jagat) kini terbuka!',
+                dialogueIntro: 'Arya! Kapal besar Malin Kundang terombang-ambing membawa momentum gelombang sebesar 3.600 kg·m/s! Jika waktu tumbukan terlalu singkat, gaya benturannya akan menghancurkan dermaga pesisir! Gunakan Lontar Cakra untuk memperpanjang Waktu Kontak Redaman (Δt) dan Gaya Reaksi Pemecah Ombak agar Impuls penahan tepat 3.600 N·s dan Gaya Benturan ≤ 900 N!',
+                dialogueSolved: 'Syukurlah! Dengan waktu redaman Δt = 4 sekon dan gaya reaksi 900 N, impuls gelombang teredam sempurna tanpa menghancurkan pesisir. Ambillah "Kristal Tumbukan" untuk membuka Panggung Pustaka Jagat!',
+                puzzle: {
+                    title: 'Impuls & Momentum: Pemecah Gelombang Kapal Malin Kundang',
+                    formulaBadge: 'I = F·Δt = Δp',
+                    formulaText: 'Syarat Redaman Aman: Impuls (I = F_reaksi × Δt) = 3.600 N·s  DAN  Gaya Benturan (F_reaksi) ≤ 900 N',
+                    hint: 'Momentum gelombang Δp = 3.600 kg·m/s. Agar dermaga tidak hancur (F ≤ 900 N), perbesar Waktu Kontak Bantalan Air (Δt = 4 s) dan atur Gaya Reaksi Pemecah Ombak (F = 900 N) sehingga 900 × 4 = 3.600 N·s!',
+                    sliders: [
+                        { id: 'force', label: 'Gaya Reaksi Pemecah Ombak (F)', min: 600, max: 1800, step: 300, val: 1200, unit: 'N' },
+                        { id: 'time', label: 'Waktu Kontak Redaman Impuls (Δt)', min: 1, max: 5, step: 1, val: 2, unit: 's' }
+                    ],
+                    evaluate: (vals) => {
+                        const targetP = 3600;
+                        const impulse = vals.force * vals.time;
+                        const impulseOk = impulse === targetP;
+                        const safeForce = vals.force <= 900;
+                        const solved = impulseOk && safeForce;
+                        return {
+                            solved,
+                            telemetry: [
+                                { label: 'Momentum Ombak (Δp)', value: `3.600 kg·m/s`, ok: true },
+                                { label: 'Impuls Redaman (I = F·Δt)', value: `${impulse.toLocaleString('id-ID')} N·s`, ok: impulseOk },
+                                { label: 'Gaya Benturan Maks (F)', value: `${vals.force} N (Batas ≤ 900 N)`, ok: safeForce },
+                                { label: 'Kondisi Pesisir', value: solved ? 'Aman & Terlindungi' : (!safeForce ? 'Dermaga Retak!' : 'Momentum Belum Teredam'), ok: solved }
+                            ],
+                            feedback: solved
+                                ? 'SEIMBANG! Perpanjangan waktu kontak (Δt = 4 s) menurunkan gaya benturan menjadi 900 N sekaligus meredam seluruh momentum 3.600 N·s!'
+                                : (!impulseOk ? `Impuls saat ini ${impulse} N·s (Target: 3.600 N·s). Coba F = 900 N dan Δt = 4 s!` : 'Impuls sudah 3.600 N·s, tetapi Gaya F masih > 900 N! Perbesar Δt menjadi 4 s dan turunkan F ke 900 N!')
+                        };
+                    }
+                }
+            },
+            map5: {
+                id: 'map5',
+                order: 5,
+                name: 'Map Final: Panggung Pustaka Jagat',
+                shortName: 'Panggung Pustaka Jagat',
+                npcName: 'Ki Dalang, Semar & Punakawan',
+                npcAvatar: '👑',
+                physicsTopic: 'Kinematika Rotasi, Momen Inersia & Momentum Sudut',
+                relicName: 'Mahkota Cakra Parahyangan',
+                relicIcon: '🌟',
+                unlocked: false,
+                completed: false,
+                skyTop: '#2e1065',
+                skyBottom: '#ca8a04',
+                groundColor: '#1c1917',
+                objectiveUnfinished: 'Atur Momen Inersia dan Kecepatan Sudut Wayang Golek Raksasa untuk memulihkan hukum alam Nusantara!',
+                objectiveFinished: 'TAMAT! Kelima Kristal Cakra Karsa bersatu memulihkan Jagat Parahyangan!',
+                dialogueIntro: 'Inilah puncak perjalananmu, Arya! Untuk menutup retakan gerhana Sang Kala, kita harus mementaskan Wayang Golek Agung di Panggung Pustaka Jagat. Gunakan Konservasi Momentum Sudut (L = I × ω) di Lontar Cakra agar putaran Cakra Jagat mencapai L = 120 kg·m²/s!',
+                dialogueSolved: 'Subhanallah, sempurna! Putaran Wayang Golek Agung memancarkan harmoni fisika ke seluruh penjuru Nusantara. Sang Kala telah mundur, dan kamu resmi diwisuda sebagai Dalang Cakra Parahyangan!',
+                puzzle: {
+                    title: 'Puncak Cerita: Konservasi Momentum Sudut Wayang Golek Agung',
+                    formulaBadge: 'I = ½·M·R²  &  L = I·ω',
+                    formulaText: 'Target Momentum Sudut Pementasan Agung: L = I × ω = 120 kg·m²/s (dengan I = ½ × M × R²)',
+                    hint: 'Pilih kombinasi Massa Cakra (M = 6 kg), Jari-jari Sendi Wayang (R = 2 m) sehingga Momen Inersia I = ½ × 6 × 2² = 12 kg·m², lalu atur Kecepatan Sudut (ω = 10 rad/s) agar L = 12 × 10 = 120 kg·m²/s!',
+                    sliders: [
+                        { id: 'mass', label: 'Massa Sendi Wayang Agung (M)', min: 2, max: 10, step: 2, val: 4, unit: 'kg' },
+                        { id: 'radius', label: 'Jari-jari Rotasi Wayang (R)', min: 1, max: 3, step: 1, val: 2, unit: 'm' },
+                        { id: 'omega', label: 'Kecepatan Sudut Putaran (ω)', min: 5, max: 15, step: 5, val: 5, unit: 'rad/s' }
+                    ],
+                    evaluate: (vals) => {
+                        const inertia = 0.5 * vals.mass * (vals.radius * vals.radius);
+                        const L = inertia * vals.omega;
+                        const solved = Math.abs(L - 120) < 0.01;
+                        return {
+                            solved,
+                            telemetry: [
+                                { label: 'Momen Inersia (I = ½MR²)', value: `${inertia} kg·m²`, ok: inertia === 12 },
+                                { label: 'Kecepatan Sudut (ω)', value: `${vals.omega} rad/s`, ok: vals.omega === 10 },
+                                { label: 'Momentum Sudut (L = I·ω)', value: `${L} kg·m²/s (Target: 120)`, ok: solved },
+                                { label: 'Harmoni Jagat', value: solved ? '100% Pulih!' : 'Belum Selaras', ok: solved }
+                            ],
+                            feedback: solved
+                                ? 'SEIMBANG AGUNG! Momentum Sudut L = 120 kg·m²/s tercapai! Pementasan Wayang Golek memulihkan tatanan alam Nusantara!'
+                                : `Momentum Sudut saat ini L = ${L} kg·m²/s. Atur M = 6 kg, R = 2 m (sehingga I = 12 kg·m²) dan ω = 10 rad/s agar L = 120!`
+                        };
+                    }
+                }
+            }
+        };
+
+        const gameState = {
+            currentMapId: 'hub',
+            crystalsCollected: 0,
+            activeSliderValues: {},
+            cameraX: 0,
+            worldWidth: 1600,
+            particles: [],
+            ambientFireflies: [],
+            clouds: [],
+            time: 0
+        };
+
+        for (let i = 0; i < 45; i++) {
+            gameState.ambientFireflies.push({
+                x: Math.random() * 1600,
+                y: Math.random() * 440 + 20,
+                r: Math.random() * 2.2 + 0.8,
+                speedX: (Math.random() - 0.5) * 0.4,
+                speedY: (Math.random() - 0.5) * 0.3,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+        for (let i = 0; i < 10; i++) {
+            gameState.clouds.push({
+                x: i * 220 + Math.random() * 80,
+                y: 45 + Math.random() * 110,
+                w: 110 + Math.random() * 90,
+                speed: 0.12 + Math.random() * 0.15
+            });
+        }
+
+        const player = {
+            x: 160,
+            y: 300,
+            vx: 0,
+            vy: 0,
+            width: 38,
+            height: 68,
+            speed: 4.8,
+            jumpForce: -12.5,
+            gravity: 0.55,
+            grounded: false,
+            facing: 1,
+            walkFrame: 0
+        };
+
+        const keys = {
+            left: false,
+            right: false,
+            jump: false
+        };
+
+        // Level Geometry (Platforms, NPCs, Portals) dynamically built per map
+        let currentLevel = {
+            platforms: [],
+            npc: null,
+            boat: null,
+            portal: null
+        };
+
+        // Web Audio API Synthesizer for Traditional Gamelan Feedback
+        let audioCtx = null;
+        function playGamelanTone(freq = 528, duration = 0.35, type = 'sine') {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                // Ignore audio errors if user hasn't interacted yet
+            }
+        }
+
+        function playSuccessChord() {
+            playGamelanTone(440, 0.4, 'triangle');
+            setTimeout(() => playGamelanTone(554.37, 0.4, 'triangle'), 120);
+            setTimeout(() => playGamelanTone(659.25, 0.6, 'sine'), 240);
+            setTimeout(() => playGamelanTone(880, 0.8, 'sine'), 360);
+        }
+
+        function loadMap(mapId) {
+            const mapData = MAPS_DATA[mapId];
+            if (!mapData || !mapData.unlocked) return;
+
+            gameState.currentMapId = mapId;
+            player.x = 120;
+            player.y = 260;
+            player.vx = 0;
+            player.vy = 0;
+            gameState.cameraX = 0;
+
+            const groundY = 470;
+            currentLevel.platforms = [
+                // Main Ground
+                { x: 0, y: groundY, w: 1600, h: 160, type: 'ground' },
+                // Stepping Platforms for 2D Platformer Exploration
+                { x: 300, y: 380, w: 150, h: 22, type: 'step' },
+                { x: 520, y: 315, w: 160, h: 22, type: 'step' },
+                { x: 760, y: 375, w: 150, h: 22, type: 'step' }
+            ];
+
+            // NPC Position
+            currentLevel.npc = {
+                x: 600,
+                y: groundY - 74,
+                w: 52,
+                h: 74,
+                name: mapData.npcName,
+                avatar: mapData.npcAvatar
+            };
+
+            if (mapId === 'hub') {
+                // Hub has Perahu Panji at the dock on the right
+                currentLevel.boat = {
+                    x: 1020,
+                    y: groundY - 45,
+                    w: 180,
+                    h: 60,
+                    label: 'Perahu Panji (Layar Dunia)'
+                };
+                currentLevel.portal = null;
+            } else {
+                currentLevel.boat = {
+                    x: 35,
+                    y: groundY - 45,
+                    w: 110,
+                    h: 50,
+                    label: 'Kembali ke Dermaga Hub'
+                };
+                currentLevel.portal = {
+                    x: 1360,
+                    y: groundY - 110,
+                    w: 75,
+                    h: 110,
+                    label: 'Gapura Wilayah Berikutnya'
+                };
+            }
+
+            updateHUD();
+            closeDialogueModal();
+            document.getElementById('world-map-modal').classList.add('hidden');
+            playGamelanTone(392, 0.3, 'sine');
+        }
+
+        function updateHUD() {
+            const mapData = MAPS_DATA[gameState.currentMapId];
+            document.getElementById('hud-location').textContent = `📍 ${mapData.name}`;
+            document.getElementById('hud-objective').textContent = mapData.completed
+                ? mapData.objectiveFinished
+                : mapData.objectiveUnfinished;
+
+            // Show/Hide Lontar Cakra button on HUD
+            const cakraBtn = document.getElementById('btn-open-cakra');
+            if (gameState.currentMapId === 'hub') {
+                cakraBtn.classList.add('hidden');
+            } else {
+                cakraBtn.classList.remove('hidden');
+            }
+
+            // Update 5 Kristal Cakra Karsa icons
+            const crystalContainer = document.getElementById('hud-crystals');
+            crystalContainer.innerHTML = '';
+            let completedCount = 0;
+            ['map1', 'map2', 'map3', 'map4', 'map5'].forEach((id) => {
+                const isDone = MAPS_DATA[id].completed;
+                if (isDone) completedCount++;
+                const span = document.createElement('span');
+                span.className = `text-sm transition-transform duration-300 ${isDone ? 'scale-110 cakra-glow' : 'opacity-25 grayscale'}`;
+                span.textContent = '💠';
+                span.title = MAPS_DATA[id].shortName;
+                crystalContainer.appendChild(span);
+            });
+            gameState.crystalsCollected = completedCount;
+            document.getElementById('hud-crystal-count').textContent = `${completedCount}/5`;
+
+            // Update Relic Icons
+            const relicContainer = document.getElementById('hud-relics');
+            relicContainer.innerHTML = '';
+            ['map1', 'map2', 'map3', 'map4'].forEach((id) => {
+                const m = MAPS_DATA[id];
+                const span = document.createElement('span');
+                span.className = m.completed ? 'opacity-100 cakra-glow' : 'opacity-25 grayscale';
+                span.textContent = m.relicIcon;
+                span.title = `${m.relicName} (${m.completed ? 'Terbuka' : 'Terkunci'})`;
+                relicContainer.appendChild(span);
+            });
+        }
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function updateGamePhysics() {
+            gameState.time += 0.03;
+
+            // Horizontal movement
+            if (keys.left) {
+                player.vx = -player.speed;
+                player.facing = -1;
+                player.walkFrame += 0.22;
+            } else if (keys.right) {
+                player.vx = player.speed;
+                player.facing = 1;
+                player.walkFrame += 0.22;
+            } else {
+                player.vx *= 0.78;
+                if (Math.abs(player.vx) < 0.1) player.vx = 0;
+                player.walkFrame = 0;
+            }
+
+            // Jump
+            if (keys.jump && player.grounded) {
+                player.vy = player.jumpForce;
+                player.grounded = false;
+                playGamelanTone(587.33, 0.18, 'sine');
+            }
+
+            // Apply Gravity
+            player.vy += player.gravity;
+            player.x += player.vx;
+            player.y += player.vy;
+
+            // World boundaries
+            if (player.x < 20) player.x = 20;
+            if (player.x + player.width > gameState.worldWidth - 20) {
+                player.x = gameState.worldWidth - 20 - player.width;
+            }
+
+            // Platform Collisions
+            player.grounded = false;
+            for (const plat of currentLevel.platforms) {
+                if (
+                    player.x + player.width > plat.x &&
+                    player.x < plat.x + plat.w &&
+                    player.y + player.height >= plat.y &&
+                    player.y + player.height <= plat.y + plat.h + 16 &&
+                    player.vy >= 0
+                ) {
+                    player.y = plat.y - player.height;
+                    player.vy = 0;
+                    player.grounded = true;
+                }
+            }
+
+            // Smooth Camera Tracking
+            const targetCamX = player.x - canvas.width * 0.38;
+            const maxCamX = Math.max(0, gameState.worldWidth - canvas.width);
+            gameState.cameraX += (Math.max(0, Math.min(targetCamX, maxCamX)) - gameState.cameraX) * 0.12;
+
+            // Check Proximity for Contextual Interaction Prompt
+            checkInteractiveProximity();
+        }
+
+        function checkInteractiveProximity() {
+            const promptEl = document.getElementById('interaction-prompt');
+            const promptText = document.getElementById('interaction-text');
+            const pCenter = player.x + player.width / 2;
+
+            // Near NPC?
+            if (currentLevel.npc && Math.abs(pCenter - (currentLevel.npc.x + 24)) < 85) {
+                promptEl.classList.remove('hidden');
+                promptText.textContent = `Bicara dengan ${currentLevel.npc.name}`;
+                return 'npc';
+            }
+            // Near Boat?
+            if (currentLevel.boat && Math.abs(pCenter - (currentLevel.boat.x + currentLevel.boat.w / 2)) < 105) {
+                promptEl.classList.remove('hidden');
+                promptText.textContent = gameState.currentMapId === 'hub'
+                    ? 'Naik Perahu Panji (Pilih Map Nusantara)'
+                    : 'Naik Perahu Panji (Peta Dunia)';
+                return 'boat';
+            }
+            // Near Portal?
+            if (currentLevel.portal && Math.abs(pCenter - (currentLevel.portal.x + 38)) < 85) {
+                promptEl.classList.remove('hidden');
+                const mapData = MAPS_DATA[gameState.currentMapId];
+                promptText.textContent = mapData.completed
+                    ? 'Masuki Gapura ke Wilayah Berikutnya!'
+                    : 'Gapura Terkunci (Selesaikan Lontar Cakra)';
+                return 'portal';
+            }
+
+            promptEl.classList.add('hidden');
+            return null;
+        }
+
+        function renderGameWorld() {
+            const mapData = MAPS_DATA[gameState.currentMapId];
+            const w = canvas.width;
+            const h = canvas.height;
+            const t = gameState.time;
+
+            ctx.save();
+            // 1. Rich Atmospheric Sky Gradient
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+            skyGrad.addColorStop(0, mapData.skyTop);
+            skyGrad.addColorStop(0.65, mapData.skyBottom);
+            skyGrad.addColorStop(1, '#090502');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            // 2. Stars / Distant Celestial Dust
+            ctx.fillStyle = 'rgba(254, 240, 138, 0.45)';
+            for (let i = 0; i < 30; i++) {
+                const sx = ((i * 97) % w);
+                const sy = ((i * 53) % (h * 0.55));
+                const twinkle = 0.4 + Math.sin(t * 2 + i) * 0.4;
+                ctx.globalAlpha = Math.max(0.1, twinkle);
+                ctx.fillRect(sx, sy, 2, 2);
+            }
+            ctx.globalAlpha = 1;
+
+            // 3. Mystical Eclipse (Gerhana Kala) with Volumetric Corona
+            const sunX = w * 0.78 - gameState.cameraX * 0.08;
+            const sunY = h * 0.22;
+            ctx.save();
+            const coronaGrad = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 130);
+            coronaGrad.addColorStop(0, 'rgba(250, 204, 21, 0.9)');
+            coronaGrad.addColorStop(0.35, 'rgba(234, 88, 12, 0.35)');
+            coronaGrad.addColorStop(1, 'rgba(234, 88, 12, 0)');
+            ctx.fillStyle = coronaGrad;
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 130, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 44, 0, Math.PI * 2);
+            ctx.fillStyle = gameState.crystalsCollected === 5 ? '#fef08a' : '#eab308';
+            ctx.fill();
+
+            if (gameState.crystalsCollected < 5) {
+                ctx.beginPath();
+                ctx.arc(sunX + gameState.crystalsCollected * 7.5, sunY, 40, 0, Math.PI * 2);
+                ctx.fillStyle = '#090502';
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // 4. Drifting Clouds / Mist Layer (Parallax 0.15)
+            ctx.save();
+            for (const c of gameState.clouds) {
+                c.x += c.speed;
+                if (c.x > 2000) c.x = -200;
+                const cx = c.x - gameState.cameraX * 0.15;
+                const cGrad = ctx.createRadialGradient(cx, c.y, 5, cx, c.y, c.w * 0.6);
+                cGrad.addColorStop(0, 'rgba(254, 243, 199, 0.14)');
+                cGrad.addColorStop(1, 'rgba(254, 243, 199, 0)');
+                ctx.fillStyle = cGrad;
+                ctx.beginPath();
+                ctx.ellipse(cx, c.y, c.w * 0.6, 24, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // 5. Far Mountain Range (Parallax 0.2)
+            for (let i = -1; i < 6; i++) {
+                const mx = i * 420 - (gameState.cameraX * 0.2);
+                const mGrad = ctx.createLinearGradient(mx + 230, h * 0.24, mx + 230, h);
+                mGrad.addColorStop(0, 'rgba(30, 27, 46, 0.85)');
+                mGrad.addColorStop(0.6, 'rgba(17, 12, 22, 0.92)');
+                mGrad.addColorStop(1, '#090502');
+                ctx.fillStyle = mGrad;
+
+                ctx.beginPath();
+                ctx.moveTo(mx, h);
+                ctx.quadraticCurveTo(mx + 130, h * 0.44, mx + 230, h * 0.24);
+                ctx.quadraticCurveTo(mx + 330, h * 0.44, mx + 460, h);
+                ctx.closePath();
+                ctx.fill();
+
+                // Sunlit mountain ridge highlight & volcanic crater rim
+                ctx.strokeStyle = 'rgba(253, 224, 71, 0.14)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(mx + 230, h * 0.24);
+                ctx.quadraticCurveTo(mx + 275, h * 0.36, mx + 315, h * 0.55);
+                ctx.stroke();
+            }
+
+            // 6. Mid-ground Nusantara Temple, Tropical Palms & Pine Silhouettes (Parallax 0.45)
+            for (let i = -1; i < 8; i++) {
+                const hx = i * 290 - (gameState.cameraX * 0.45);
+                const hillGrad = ctx.createLinearGradient(hx, h * 0.52, hx, h);
+                hillGrad.addColorStop(0, 'rgba(42, 24, 12, 0.88)');
+                hillGrad.addColorStop(1, 'rgba(12, 7, 4, 0.96)');
+                ctx.fillStyle = hillGrad;
+
+                ctx.beginPath();
+                ctx.moveTo(hx, h);
+                ctx.quadraticCurveTo(hx + 145, h * 0.54, hx + 290, h);
+                ctx.closePath();
+                ctx.fill();
+
+                // Detailed Prambanan / Borobudur Silhouette on hilltops
+                const stupaX = hx + 145;
+                const stupaY = h * 0.63;
+                ctx.fillStyle = 'rgba(24, 13, 6, 0.92)';
+                ctx.fillRect(stupaX - 22, stupaY + 12, 44, 24);
+                ctx.fillRect(stupaX - 16, stupaY - 2, 32, 16);
+                ctx.fillRect(stupaX - 10, stupaY - 15, 20, 14);
+                ctx.beginPath();
+                ctx.moveTo(stupaX - 7, stupaY - 15);
+                ctx.lineTo(stupaX, stupaY - 40);
+                ctx.lineTo(stupaX + 7, stupaY - 15);
+                ctx.closePath();
+                ctx.fill();
+
+                // Silhouette Coconut Palm Trees on hill slopes
+                const palmX = hx + 65;
+                const palmY = h * 0.72;
+                ctx.strokeStyle = 'rgba(24, 13, 6, 0.9)';
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.moveTo(palmX, palmY + 45);
+                ctx.quadraticCurveTo(palmX - 8, palmY + 15, palmX - 12, palmY - 12);
+                ctx.stroke();
+
+                for (let f = 0; f < 5; f++) {
+                    const ang = -0.4 + f * 0.55;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(palmX - 12, palmY - 12);
+                    ctx.quadraticCurveTo(
+                        palmX - 12 + Math.cos(ang) * 14,
+                        palmY - 18 + Math.sin(ang) * 6,
+                        palmX - 12 + Math.cos(ang) * 24,
+                        palmY - 6 + Math.sin(ang) * 14
+                    );
+                    ctx.stroke();
+                }
+            }
+
+            // Apply horizontal camera translation & vertical responsive alignment
+            ctx.translate(-gameState.cameraX, h - 560);
+
+            // 7. Draw Map-Specific Realistic Dynamic Scenery
+            drawMapSpecificEnvironment(mapData);
+
+            // 8. Draw Platforms with Realistic Carved Andesite Blocks, Roots, and Lush Moss
+            for (const plat of currentLevel.platforms) {
+                if (plat.type === 'ground') {
+                    // Deep Earth & Bedrock Strata Gradient
+                    const gGrad = ctx.createLinearGradient(0, plat.y, 0, plat.y + plat.h);
+                    gGrad.addColorStop(0, mapData.groundColor);
+                    gGrad.addColorStop(0.22, '#23140b');
+                    gGrad.addColorStop(0.65, '#120a05');
+                    gGrad.addColorStop(1, '#050301');
+                    ctx.fillStyle = gGrad;
+                    ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+
+                    // Realistic Beveled Andesite Stone Curbs Along Top Edge
+                    for (let bx = plat.x; bx < plat.x + plat.w; bx += 56) {
+                        const bw = 54;
+                        const stoneGrad = ctx.createLinearGradient(bx, plat.y, bx, plat.y + 18);
+                        stoneGrad.addColorStop(0, '#78716c');
+                        stoneGrad.addColorStop(0.45, '#57534e');
+                        stoneGrad.addColorStop(1, '#292524');
+                        ctx.fillStyle = stoneGrad;
+                        ctx.beginPath();
+                        ctx.roundRect(bx + 1, plat.y, bw, 16, 3);
+                        ctx.fill();
+
+                        // Top specular highlight on stone block
+                        ctx.strokeStyle = 'rgba(254, 243, 199, 0.25)';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(bx + 3, plat.y + 1.5);
+                        ctx.lineTo(bx + bw - 3, plat.y + 1.5);
+                        ctx.stroke();
+
+                        // Golden Majapahit terracotta trim strip beneath stone curb
+                        ctx.fillStyle = '#b45309';
+                        ctx.fillRect(bx + 1, plat.y + 16, bw, 4);
+
+                        // Subterranean root & rock texture details
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+                        ctx.beginPath();
+                        ctx.ellipse(bx + 28, plat.y + 38 + (bx % 17), 16, 6, 0.2, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Lush swaying grass tufts / sea kelp (in Map 2)
+                        const grassColor = mapData.id === 'map2' ? '#14b8a6' : '#65a30d';
+                        const grassShadow = mapData.id === 'map2' ? '#0f766e' : '#3f6212';
+                        const sway = Math.sin(t * 2.2 + bx * 0.05) * 2.5;
+
+                        ctx.fillStyle = grassShadow;
+                        ctx.beginPath();
+                        ctx.moveTo(bx + 10, plat.y + 1);
+                        ctx.quadraticCurveTo(bx + 8 + sway, plat.y - 7, bx + 6 + sway, plat.y - 11);
+                        ctx.quadraticCurveTo(bx + 13 + sway, plat.y - 6, bx + 15, plat.y + 1);
+                        ctx.fill();
+
+                        ctx.fillStyle = grassColor;
+                        ctx.beginPath();
+                        ctx.moveTo(bx + 14, plat.y + 1);
+                        ctx.quadraticCurveTo(bx + 16 + sway, plat.y - 9, bx + 19 + sway, plat.y - 13);
+                        ctx.quadraticCurveTo(bx + 21 + sway, plat.y - 7, bx + 20, plat.y + 1);
+                        ctx.fill();
+                    }
+                } else {
+                    // Realistic Floating Candi Andesite Stone Ledge with Carved Reliefs & Moss
+                    ctx.save();
+                    // Drop shadow under floating ledge
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+                    ctx.beginPath();
+                    ctx.roundRect(plat.x + 4, plat.y + 6, plat.w, plat.h, 6);
+                    ctx.fill();
+
+                    const pGrad = ctx.createLinearGradient(plat.x, plat.y, plat.x, plat.y + plat.h);
+                    pGrad.addColorStop(0, '#78716c');
+                    pGrad.addColorStop(0.4, '#44403c');
+                    pGrad.addColorStop(1, '#1c1917');
+                    ctx.fillStyle = pGrad;
+                    ctx.strokeStyle = '#d97706';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.roundRect(plat.x, plat.y, plat.w, plat.h, 5);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Stone block vertical joints & inner carved relief border
+                    ctx.strokeStyle = 'rgba(253, 224, 71, 0.35)';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(plat.x + 5, plat.y + 4, plat.w - 10, plat.h - 8);
+                    for (let sx = plat.x + 38; sx < plat.x + plat.w - 20; sx += 38) {
+                        ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+                        ctx.beginPath();
+                        ctx.moveTo(sx, plat.y + 1);
+                        ctx.lineTo(sx, plat.y + plat.h - 1);
+                        ctx.stroke();
+                    }
+
+                    // Top moss carpet on floating ledge
+                    ctx.fillStyle = mapData.id === 'map2' ? '#0d9488' : '#4d7c0f';
+                    for (let mx = plat.x + 8; mx < plat.x + plat.w - 14; mx += 22) {
+                        ctx.beginPath();
+                        ctx.ellipse(mx + 6, plat.y + 1.5, 8, 2.5, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    // Hanging tropical vines & glowing roots under floating ledge
+                    for (let vx = plat.x + 18; vx < plat.x + plat.w - 15; vx += 32) {
+                        const vLen = 14 + (vx % 12);
+                        const vSway = Math.sin(t * 2.4 + vx) * 4;
+                        ctx.strokeStyle = '#3f6212';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(vx, plat.y + plat.h);
+                        ctx.quadraticCurveTo(vx + vSway * 0.6, plat.y + plat.h + vLen * 0.5, vx + vSway, plat.y + plat.h + vLen);
+                        ctx.stroke();
+
+                        // Small leaves along vine
+                        ctx.fillStyle = '#65a30d';
+                        ctx.beginPath();
+                        ctx.ellipse(vx + vSway * 0.5 + 3, plat.y + plat.h + vLen * 0.5, 3.5, 1.8, 0.4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            }
+
+            // 9. Draw Perahu Panji (Detailed Traditional Wooden Outrigger Ship)
+            if (currentLevel.boat) {
+                drawPerahuPanji(currentLevel.boat.x, currentLevel.boat.y, currentLevel.boat.label);
+            }
+
+            // 10. Draw Exit Portal Gate (Detailed Majapahit Candi Bentar)
+            if (currentLevel.portal) {
+                drawGapuraPortal(currentLevel.portal.x, currentLevel.portal.y, mapData.completed);
+            }
+
+            // 11. Draw Realistic Character NPC
+            if (currentLevel.npc) {
+                drawNPC(currentLevel.npc, mapData.completed, mapData.id);
+            }
+
+            // 12. Draw Realistic Articulated Player Character (Arya)
+            drawAryaPlayer();
+
+            // 13. Foreground Ambient Kunang-Kunang / Mystical Ember Particles
+            for (const f of gameState.ambientFireflies) {
+                f.x += f.speedX;
+                f.y += f.speedY + Math.sin(t + f.phase) * 0.15;
+                if (f.x < 0) f.x = 1600;
+                if (f.x > 1600) f.x = 0;
+
+                const glowAlpha = 0.35 + Math.sin(t * 3 + f.phase) * 0.3;
+                ctx.fillStyle = `rgba(253, 224, 71, ${Math.max(0.1, glowAlpha)})`;
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.restore();
+        }
+
+        function drawRealisticWater(x, y, width, height, t, baseColor = 'rgba(2, 132, 199, 0.78)') {
+            ctx.save();
+
+            // 1. Background Secondary Wave Crest (Darker deeper swell)
+            ctx.fillStyle = 'rgba(7, 89, 133, 0.65)';
+            ctx.beginPath();
+            ctx.moveTo(x, y + height);
+            for (let wx = x; wx <= x + width; wx += 18) {
+                const wy = y - 3 + Math.cos(wx * 0.025 + t * 2.0) * 4.5 + Math.sin(wx * 0.012 - t * 1.4) * 3;
+                ctx.lineTo(wx, wy);
+            }
+            ctx.lineTo(x + width, y + height);
+            ctx.closePath();
+            ctx.fill();
+
+            // 2. Primary Water Body Gradient
+            const wGrad = ctx.createLinearGradient(0, y, 0, y + height);
+            wGrad.addColorStop(0, baseColor);
+            wGrad.addColorStop(0.45, 'rgba(12, 74, 110, 0.88)');
+            wGrad.addColorStop(1, 'rgba(4, 24, 42, 0.97)');
+            ctx.fillStyle = wGrad;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y + height);
+            for (let wx = x; wx <= x + width; wx += 16) {
+                const wy = y + Math.sin(wx * 0.032 + t * 2.6) * 4.2 + Math.cos(wx * 0.016 - t * 1.9) * 2.8;
+                ctx.lineTo(wx, wy);
+            }
+            ctx.lineTo(x + width, y + height);
+            ctx.closePath();
+            ctx.fill();
+
+            // 3. Subsurface Sunlit Caustics & Shimmering Horizontal Reflections
+            for (let row = 1; row <= 4; row++) {
+                const ry = y + row * 18;
+                if (ry > y + height - 8) break;
+                ctx.strokeStyle = `rgba(186, 230, 253, ${0.32 - row * 0.06})`;
+                ctx.lineWidth = 1.6;
+                ctx.beginPath();
+                for (let wx = x + 15; wx < x + width - 25; wx += 55) {
+                    const offset = Math.sin(t * 2 + row + wx * 0.02) * 10;
+                    ctx.moveTo(wx + offset, ry);
+                    ctx.lineTo(wx + offset + 24 - row * 3, ry);
+                }
+                ctx.stroke();
+            }
+
+            // 4. Sparkling Foam Crest along Primary Surface Wave
+            ctx.strokeStyle = 'rgba(224, 242, 254, 0.78)';
+            ctx.lineWidth = 2.4;
+            ctx.beginPath();
+            for (let wx = x; wx <= x + width; wx += 16) {
+                const wy = y + Math.sin(wx * 0.032 + t * 2.6) * 4.2 + Math.cos(wx * 0.016 - t * 1.9) * 2.8;
+                if (wx === x) ctx.moveTo(wx, wy);
+                else ctx.lineTo(wx, wy);
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawMapSpecificEnvironment(mapData) {
+            const groundY = 470;
+            const t = gameState.time;
+
+            if (mapData.id === 'hub') {
+                // Detailed Joglo Pendopo Royal Pavilion & Ornate Gunungan Wayang Sanctuary
+                ctx.save();
+                ctx.translate(420, groundY);
+
+                // Background Joglo Carved Teak Pillars (Soko Guru) & Multi-tiered Tajug Roof
+                ctx.fillStyle = '#271206';
+                ctx.fillRect(-165, -175, 12, 155);
+                ctx.fillRect(153, -175, 12, 155);
+                ctx.fillStyle = '#451a03';
+                ctx.fillRect(-125, -175, 10, 155);
+                ctx.fillRect(115, -175, 10, 155);
+
+                // Hanging Traditional Glass/Brass Temple Lanterns
+                [-145, 145].forEach((lx) => {
+                    const swing = Math.sin(t * 2 + lx) * 2;
+                    ctx.strokeStyle = '#ca8a04';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(lx, -175);
+                    ctx.lineTo(lx + swing, -148);
+                    ctx.stroke();
+
+                    const lGlow = ctx.createRadialGradient(lx + swing, -142, 2, lx + swing, -142, 24);
+                    lGlow.addColorStop(0, 'rgba(253, 224, 71, 0.9)');
+                    lGlow.addColorStop(1, 'rgba(234, 179, 8, 0)');
+                    ctx.fillStyle = lGlow;
+                    ctx.beginPath();
+                    ctx.arc(lx + swing, -142, 24, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#fde047';
+                    ctx.fillRect(lx + swing - 5, -147, 10, 11);
+                });
+
+                // Joglo Roof Tiers (Atap Brunjung)
+                const roofGrad = ctx.createLinearGradient(0, -255, 0, -170);
+                roofGrad.addColorStop(0, '#451a03');
+                roofGrad.addColorStop(1, '#1c0a02');
+                ctx.fillStyle = roofGrad;
+                ctx.strokeStyle = '#ca8a04';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(-195, -172);
+                ctx.lineTo(-130, -210);
+                ctx.lineTo(130, -210);
+                ctx.lineTo(195, -172);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Outer Golden Halo behind Gunungan
+                const halo = ctx.createRadialGradient(0, -130, 12, 0, -130, 170);
+                halo.addColorStop(0, 'rgba(250, 204, 21, 0.38)');
+                halo.addColorStop(1, 'rgba(250, 204, 21, 0)');
+                ctx.fillStyle = halo;
+                ctx.beginPath();
+                ctx.arc(0, -130, 170, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Carved Andesite Stone Pedestal Steps with Lotus Moulding
+                ctx.fillStyle = '#44403c';
+                ctx.fillRect(-135, -18, 270, 18);
+                ctx.fillStyle = '#57534e';
+                ctx.fillRect(-110, -32, 220, 14);
+                ctx.strokeStyle = '#ca8a04';
+                ctx.strokeRect(-110, -32, 220, 14);
+
+                // Royal Umbul-Umbul Penjor Banners flanking the sanctuary
+                [-178, 178].forEach((px, idx) => {
+                    const dir = idx === 0 ? -1 : 1;
+                    ctx.strokeStyle = '#a16207';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.moveTo(px, -18);
+                    ctx.quadraticCurveTo(px + dir * 8, -140, px + dir * 28, -225);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#eab308';
+                    ctx.beginPath();
+                    ctx.moveTo(px, -40);
+                    ctx.quadraticCurveTo(px + dir * 18, -130, px + dir * 26, -215);
+                    ctx.lineTo(px + dir * 14, -205);
+                    ctx.quadraticCurveTo(px + dir * 8, -125, px, -40);
+                    ctx.fill();
+                });
+
+                // Kayon / Gunungan Body with Sunggingan Gold & Crimson Gradation
+                const gunGrad = ctx.createLinearGradient(0, -268, 0, -32);
+                gunGrad.addColorStop(0, '#fde047');
+                gunGrad.addColorStop(0.25, '#ca8a04');
+                gunGrad.addColorStop(0.65, '#991b1b');
+                gunGrad.addColorStop(1, '#451a03');
+                ctx.fillStyle = gunGrad;
+                ctx.strokeStyle = '#fef08a';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(-92, -32);
+                ctx.bezierCurveTo(-118, -122, -68, -198, 0, -268);
+                ctx.bezierCurveTo(68, -198, 118, -122, 92, -32);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Intricate Kalpataru Tree of Life & Banaspati Guardian Motif inside Gunungan
+                ctx.strokeStyle = 'rgba(254, 240, 138, 0.78)';
+                ctx.lineWidth = 2.2;
+                ctx.beginPath();
+                ctx.moveTo(0, -35);
+                ctx.lineTo(0, -230);
+                for (let b = 1; b <= 4; b++) {
+                    const by = -55 - b * 35;
+                    const bw = 68 - b * 11;
+                    ctx.moveTo(0, by);
+                    ctx.quadraticCurveTo(-bw * 0.6, by - 20, -bw, by - 8);
+                    ctx.moveTo(0, by);
+                    ctx.quadraticCurveTo(bw * 0.6, by - 20, bw, by - 8);
+                }
+                ctx.stroke();
+
+                // Winged Gate (Gapura Bersayap) Motif at base of Gunungan
+                ctx.fillStyle = '#fde047';
+                ctx.beginPath();
+                ctx.arc(0, -68, 16, Math.PI, 0);
+                ctx.fill();
+
+                ctx.fillStyle = '#fef08a';
+                ctx.font = 'bold 13px "Cinzel Decorative"';
+                ctx.textAlign = 'center';
+                ctx.fillText('KAYON JAGAT PARAHYANGAN', 0, -40);
+                ctx.restore();
+
+                // Realistic Teak Wood Harbor Pier (Dermaga Kayu Jati) with Mooring Posts, Rope & Lantern
+                ctx.save();
+                // Cross-braced pier pilings
+                for (let px = 940; px <= 1260; px += 64) {
+                    const pGrad = ctx.createLinearGradient(px, groundY - 25, px + 16, groundY + 80);
+                    pGrad.addColorStop(0, '#78350f');
+                    pGrad.addColorStop(0.5, '#451a03');
+                    pGrad.addColorStop(1, '#1c0a02');
+                    ctx.fillStyle = pGrad;
+                    ctx.fillRect(px, groundY - 24, 15, 100);
+
+                    // Rope lashing around piling top
+                    ctx.fillStyle = '#d97706';
+                    ctx.fillRect(px - 2, groundY - 18, 19, 5);
+                }
+
+                // Horizontal timber deck planks above pilings
+                ctx.fillStyle = '#5c2409';
+                ctx.fillRect(925, groundY - 14, 145, 9);
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 1;
+                for (let dx = 930; dx < 1065; dx += 14) {
+                    ctx.strokeRect(dx, groundY - 14, 13, 9);
+                }
+
+                // Harbor Dock Lantern Post
+                ctx.fillStyle = '#451a03';
+                ctx.fillRect(955, groundY - 95, 7, 82);
+                ctx.fillRect(955, groundY - 95, 24, 5);
+                const dockGlow = ctx.createRadialGradient(976, groundY - 80, 2, 976, groundY - 80, 32);
+                dockGlow.addColorStop(0, 'rgba(253, 224, 71, 0.95)');
+                dockGlow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+                ctx.fillStyle = dockGlow;
+                ctx.beginPath();
+                ctx.arc(976, groundY - 80, 32, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#fef08a';
+                ctx.fillRect(971, groundY - 86, 10, 12);
+                ctx.restore();
+
+                drawRealisticWater(950, groundY - 10, 650, 130, t);
+            } else if (mapData.id === 'map1') {
+                // Map 1: Danau Citarum Hydrostatic Stone Dam, Waterwheel Sluice & Sangkuriang's Colossal Jung
+                ctx.save();
+                // Bendungan Sumbi (Megalithic Sluice Gate & Rotating Timber Waterwheel) at x = 855
+                const damGrad = ctx.createLinearGradient(825, groundY - 165, 895, groundY);
+                damGrad.addColorStop(0, '#57534e');
+                damGrad.addColorStop(0.5, '#44403c');
+                damGrad.addColorStop(1, '#1c1917');
+                ctx.fillStyle = damGrad;
+                ctx.strokeStyle = '#ca8a04';
+                ctx.lineWidth = 2;
+                ctx.fillRect(825, groundY - 155, 68, 165);
+                ctx.strokeRect(825, groundY - 155, 68, 165);
+
+                // Sluice Spillway Waterfall Cascade (Q = A * v)
+                const cascadeGrad = ctx.createLinearGradient(845, groundY - 110, 845, groundY);
+                cascadeGrad.addColorStop(0, 'rgba(186, 230, 253, 0.85)');
+                cascadeGrad.addColorStop(1, 'rgba(14, 165, 233, 0.35)');
+                ctx.fillStyle = cascadeGrad;
+                ctx.fillRect(844, groundY - 110, 30, 95);
+
+                // Rotating Mechanical Timber Waterwheel (Kincir Debit Bendungan)
+                ctx.save();
+                ctx.translate(859, groundY - 58);
+                ctx.rotate(t * (mapData.completed ? 1.8 : 0.35));
+                ctx.strokeStyle = '#d97706';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.arc(0, 0, 28, 0, Math.PI * 2);
+                ctx.stroke();
+                for (let s = 0; s < 8; s++) {
+                    ctx.rotate(Math.PI / 4);
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(31, 0);
+                    ctx.stroke();
+                }
+                ctx.restore();
+                ctx.restore();
+
+                // Sangkuriang's Colossal Jung Bahtera (Realistic Layered Nusantara Hull)
+                const boatY = mapData.completed ? groundY - 72 + Math.sin(t * 2.2) * 4.5 : groundY - 4;
+                const tilt = mapData.completed ? Math.sin(t * 1.5) * 0.022 : 0.25;
+                ctx.save();
+                ctx.translate(1110, boatY);
+                ctx.rotate(tilt);
+
+                // Twin Masts & Furled/Unfurled Royal Sundanese Sails
+                ctx.strokeStyle = '#78350f';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(-35, -24); ctx.lineTo(-35, -135);
+                ctx.moveTo(45, -24);  ctx.lineTo(45, -115);
+                ctx.stroke();
+
+                if (mapData.completed) {
+                    const sailG = ctx.createLinearGradient(-35, -130, 50, -35);
+                    sailG.addColorStop(0, '#fef08a');
+                    sailG.addColorStop(1, '#d97706');
+                    ctx.fillStyle = sailG;
+                    ctx.beginPath();
+                    ctx.moveTo(-35, -130);
+                    ctx.quadraticCurveTo(25, -105, 32, -38);
+                    ctx.lineTo(-35, -36);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+
+                // Deck Cabin Pavilion (Anjungan Bahtera)
+                ctx.fillStyle = '#5c2409';
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 1.8;
+                ctx.fillRect(-75, -52, 95, 28);
+                ctx.strokeRect(-75, -52, 95, 28);
+                // Curved Sundanese Julang Ngapak Roof on Cabin
+                ctx.fillStyle = '#451a03';
+                ctx.beginPath();
+                ctx.moveTo(-90, -52);
+                ctx.quadraticCurveTo(-28, -72, 35, -52);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Detailed Layered Teak Hull with Carved Naga Prow & Stern
+                const hullGrad = ctx.createLinearGradient(0, -30, 0, 42);
+                hullGrad.addColorStop(0, '#b45309');
+                hullGrad.addColorStop(0.45, '#78350f');
+                hullGrad.addColorStop(1, '#271206');
+                ctx.fillStyle = hullGrad;
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(-142, -32);
+                ctx.bezierCurveTo(-162, -55, -172, -72, -155, -78); // Ornate Naga Prow Neck
+                ctx.quadraticCurveTo(-138, -50, -122, -26);
+                ctx.lineTo(122, -26);
+                ctx.quadraticCurveTo(148, -48, 162, -66); // High Carved Stern
+                ctx.quadraticCurveTo(155, -32, 138, -18);
+                ctx.lineTo(102, 38);
+                ctx.lineTo(-102, 38);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Realistic Clinker Plank Seams, Golden Shields & Oar Ports
+                ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.lineWidth = 1.5;
+                [-14, 2, 18].forEach((py) => {
+                    ctx.beginPath();
+                    ctx.moveTo(-125 + Math.abs(py), py);
+                    ctx.lineTo(125 - Math.abs(py), py);
+                    ctx.stroke();
+                });
+
+                for (let sx = -90; sx <= 90; sx += 30) {
+                    ctx.fillStyle = '#fde047';
+                    ctx.beginPath();
+                    ctx.arc(sx, -6, 4.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Heavy Outrigger Stabilizer Float (Cadik Balok Kayu)
+                ctx.fillStyle = '#451a03';
+                ctx.strokeStyle = '#ca8a04';
+                ctx.beginPath();
+                ctx.roundRect(-85, 22, 170, 10, 5);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#fef08a';
+                ctx.font = 'bold 13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(mapData.completed ? '🚢 Bahtera Agung Sangkuriang (Terapung Kokoh)' : '⚠️ Bahtera Agung Sangkuriang (Tenggelam!)', 0, -146);
+                ctx.restore();
+
+                // Draw Realistic Foreground Lake Water overlapping the lower hull
+                drawRealisticWater(860, groundY - 26, 485, 115, t);
+            } else if (mapData.id === 'map2') {
+                // Map 2: Deep Ocean Trench, Bioluminescent Coral Reefs, Naga Nemburnawa & Dewa Ruci
+                // Underwater God-Rays from surface
+                ctx.save();
+                for (let r = 0; r < 5; r++) {
+                    const rx = 220 + r * 280 + Math.sin(t + r) * 25;
+                    const rayGrad = ctx.createLinearGradient(rx, 0, rx - 80, groundY);
+                    rayGrad.addColorStop(0, 'rgba(94, 234, 212, 0.16)');
+                    rayGrad.addColorStop(1, 'rgba(13, 148, 136, 0)');
+                    ctx.fillStyle = rayGrad;
+                    ctx.beginPath();
+                    ctx.moveTo(rx - 35, 0);
+                    ctx.lineTo(rx + 45, 0);
+                    ctx.lineTo(rx - 30, groundY);
+                    ctx.lineTo(rx - 125, groundY);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+
+                // Bioluminescent Deep Sea Coral & Swaying Kelp Forest
+                [240, 480, 740, 920, 1250].forEach((cx, idx) => {
+                    ctx.strokeStyle = idx % 2 === 0 ? '#2dd4bf' : '#f472b6';
+                    ctx.lineWidth = 4;
+                    for (let b = -1; b <= 1; b++) {
+                        const sway = Math.sin(t * 2 + cx + b) * 8;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, groundY);
+                        ctx.quadraticCurveTo(cx + b * 18 + sway, groundY - 35, cx + b * 26 + sway, groundY - 68);
+                        ctx.stroke();
+                    }
+                });
+                ctx.restore();
+
+                const vortexX = 1080;
+                const vortexY = groundY - 115;
+
+                ctx.save();
+                ctx.translate(vortexX, vortexY);
+
+                // Coiled Sea Serpent (Naga Nemburnawa) Scales & Swirling Hydro-Vortex
+                for (let r = 20; r <= 92; r += 16) {
+                    ctx.strokeStyle = mapData.completed
+                        ? `rgba(253, 224, 71, ${1 - r / 110})`
+                        : `rgba(45, 212, 191, ${1 - r / 110})`;
+                    ctx.lineWidth = 6;
+                    ctx.beginPath();
+                    const startAng = t * (mapData.completed ? 0.55 : 3.4) + r * 0.2;
+                    ctx.arc(0, 0, r, startAng, startAng + Math.PI * 1.4);
+                    ctx.stroke();
+                }
+
+                // Naga Head Silhouette or Radiant Dewa Ruci Sanctum
+                if (mapData.completed) {
+                    const ruciGlow = ctx.createRadialGradient(0, 0, 5, 0, 0, 65);
+                    ruciGlow.addColorStop(0, 'rgba(254, 240, 138, 0.95)');
+                    ruciGlow.addColorStop(0.5, 'rgba(250, 204, 21, 0.35)');
+                    ruciGlow.addColorStop(1, 'rgba(250, 204, 21, 0)');
+                    ctx.fillStyle = ruciGlow;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 65, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Dewa Ruci Lotus Meditating Silhouette
+                    ctx.fillStyle = '#fef08a';
+                    ctx.beginPath();
+                    ctx.arc(0, -12, 9, 0, Math.PI * 2);
+                    ctx.moveTo(-16, 14);
+                    ctx.quadraticCurveTo(0, -8, 16, 14);
+                    ctx.closePath();
+                    ctx.fill();
+                } else {
+                    // Menacing Glowing Eyes of Naga Nemburnawa in the Vortex
+                    ctx.fillStyle = '#ef4444';
+                    ctx.beginPath();
+                    ctx.arc(-12, -6, 4, 0, Math.PI * 2);
+                    ctx.arc(12, -6, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.fillStyle = '#fef08a';
+                ctx.font = 'bold 13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(mapData.completed ? '✨ Cahaya Kasampurnan Dewa Ruci' : '🐉 Pusaran Viskositas Naga Nemburnawa', 0, -108);
+                ctx.restore();
+
+                drawRealisticWater(0, groundY - 22, 1600, 120, t, 'rgba(13, 148, 136, 0.42)');
+            } else if (mapData.id === 'map3') {
+                // Map 3: Realistic Prambanan / Candi Sewu Architecture & Wooden Torque Crane (Katrol Torsi)
+                const candiX = 1090;
+
+                // Background Auxiliary Perwara Temples
+                [910, 1245].forEach((px) => {
+                    ctx.fillStyle = '#292524';
+                    ctx.strokeStyle = '#57534e';
+                    ctx.lineWidth = 1.5;
+                    ctx.fillRect(px - 28, groundY - 65, 56, 65);
+                    ctx.fillRect(px - 20, groundY - 102, 40, 37);
+                    ctx.beginPath();
+                    ctx.moveTo(px - 18, groundY - 102);
+                    ctx.lineTo(px, groundY - 135);
+                    ctx.lineTo(px + 18, groundY - 102);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                });
+
+                // Giant Bamboo & Teak Torque Crane (Pesawat Sederhana Katrol Bandung Bondowoso)
+                ctx.save();
+                ctx.strokeStyle = '#92400e';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(965, groundY);
+                ctx.lineTo(990, groundY - 235);
+                ctx.lineTo(1140, groundY - 235);
+                ctx.stroke();
+
+                // Pulley Wheel & Suspension Rope
+                ctx.fillStyle = '#ca8a04';
+                ctx.beginPath();
+                ctx.arc(1090, groundY - 235, 11, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(1090, groundY - 235);
+                ctx.lineTo(1090, groundY - 190);
+                ctx.stroke();
+                ctx.restore();
+
+                // Main Candi Sewu Monolith Structure
+                ctx.save();
+                ctx.translate(candiX, groundY);
+                if (!mapData.completed) {
+                    ctx.rotate(-0.14 + Math.sin(t * 4) * 0.022);
+                }
+
+                const tiers = [
+                    { w: 162, h: 52, y: -52 },
+                    { w: 124, h: 48, y: -100 },
+                    { w: 88,  h: 46, y: -146 },
+                    { w: 52,  h: 44, y: -190 }
+                ];
+                tiers.forEach((tr, idx) => {
+                    const tGrad = ctx.createLinearGradient(-tr.w / 2, tr.y, tr.w / 2, tr.y);
+                    tGrad.addColorStop(0, '#44403c');
+                    tGrad.addColorStop(0.5, '#78716c');
+                    tGrad.addColorStop(1, '#1c1917');
+                    ctx.fillStyle = tGrad;
+                    ctx.strokeStyle = mapData.completed ? '#eab308' : '#ef4444';
+                    ctx.lineWidth = 2;
+                    ctx.fillRect(-tr.w / 2, tr.y, tr.w, tr.h);
+                    ctx.strokeRect(-tr.w / 2, tr.y, tr.w, tr.h);
+
+                    // Horizontal Stone Cornice Moulding
+                    ctx.fillStyle = '#57534e';
+                    ctx.fillRect(-tr.w / 2 - 5, tr.y, tr.w + 10, 6);
+
+                    // Kala-Makara Carved Portal Niche on each tier
+                    ctx.fillStyle = '#0c0a09';
+                    ctx.beginPath();
+                    ctx.roundRect(-13, tr.y + 12, 26, tr.h - 12, [8, 8, 0, 0]);
+                    ctx.fill();
+                    ctx.strokeStyle = '#ca8a04';
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+
+                    // Corner Ratna Mini-Spires on tier ledges
+                    if (idx < 3) {
+                        [-tr.w / 2 + 6, tr.w / 2 - 6].forEach((rx) => {
+                            ctx.fillStyle = '#a8a29e';
+                            ctx.beginPath();
+                            ctx.moveTo(rx - 5, tr.y);
+                            ctx.lineTo(rx, tr.y - 14);
+                            ctx.lineTo(rx + 5, tr.y);
+                            ctx.closePath();
+                            ctx.fill();
+                        });
+                    }
+                });
+
+                // Main Crown Ratna Pinnacle (Kemuncak Agung)
+                ctx.fillStyle = '#eab308';
+                ctx.beginPath();
+                ctx.moveTo(-20, -190);
+                ctx.lineTo(0, -234);
+                ctx.lineTo(20, -190);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.fillStyle = '#fef08a';
+                ctx.font = 'bold 13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(mapData.completed ? '🛕 Candi Sewu Berdiri Tegak (Στ = 0)' : '⚠️ Struktur Monolith Candi Miring!', 0, -248);
+                ctx.restore();
+            } else if (mapData.id === 'map4') {
+                // Map 4: Pesisir Pantai Air Manis, Coastal Basalt Rocks, Wave Breaker & Malin Kundang's Phinisi Galleon
+                // Coastal Basalt Sea Stack & Swaying Coconut Palms at Shoreline (x = 835)
+                ctx.save();
+                ctx.fillStyle = '#292524';
+                ctx.beginPath();
+                ctx.moveTo(810, groundY);
+                ctx.lineTo(835, groundY - 48);
+                ctx.lineTo(885, groundY - 32);
+                ctx.lineTo(905, groundY);
+                ctx.closePath();
+                ctx.fill();
+
+                // Hydraulic Impulse Wave-Breaker Barrier (Pemecah Ombak Δt)
+                ctx.fillStyle = mapData.completed ? '#10b981' : '#f59e0b';
+                ctx.strokeStyle = '#fef08a';
+                ctx.lineWidth = 2;
+                ctx.fillRect(918, groundY - 58, 18, 65);
+                ctx.strokeRect(918, groundY - 58, 18, 65);
+                ctx.restore();
+
+                // Malin Kundang's Majestic Two-Masted Nusantara Phinisi Schooner
+                const shipX = 1115;
+                ctx.save();
+                const shake = mapData.completed ? Math.sin(t * 2.2) * 2.5 : Math.sin(t * 7.5) * 9.5;
+                const roll = mapData.completed ? Math.cos(t * 1.8) * 0.025 : Math.sin(t * 5) * 0.12;
+                ctx.translate(shipX + shake, groundY - 56);
+                ctx.rotate(roll);
+
+                // Twin Tripod Wooden Masts & Rigging Shrouds
+                ctx.strokeStyle = '#78350f';
+                ctx.lineWidth = 4.5;
+                ctx.beginPath();
+                ctx.moveTo(-28, -14); ctx.lineTo(-28, -135);
+                ctx.moveTo(38, -14);  ctx.lineTo(38, -115);
+                ctx.stroke();
+
+                // Phinisi Schooner Sails (7-Sail Nusantara Heritage Configuration)
+                const sailGrad = ctx.createLinearGradient(-40, -130, 95, -20);
+                sailGrad.addColorStop(0, mapData.completed ? '#fef9c3' : '#e7e5e4');
+                sailGrad.addColorStop(1, mapData.completed ? '#f59e0b' : '#78716c');
+                ctx.fillStyle = sailGrad;
+                ctx.strokeStyle = '#ca8a04';
+                ctx.lineWidth = 1.5;
+
+                // Fore-triangle Jib Sails (Layar Cocor) on Bowsprit
+                ctx.beginPath();
+                ctx.moveTo(-28, -128);
+                ctx.lineTo(-148, -36);
+                ctx.lineTo(-82, -26);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Main Gaff Sail (Layar Agung)
+                ctx.beginPath();
+                ctx.moveTo(-28, -122);
+                ctx.quadraticCurveTo(18, -85, 28, -24);
+                ctx.lineTo(-28, -22);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Mizzen Sail (Layar Belakang)
+                ctx.beginPath();
+                ctx.moveTo(38, -108);
+                ctx.quadraticCurveTo(82, -75, 96, -24);
+                ctx.lineTo(38, -22);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Long Bowsprit (Cucur Haluan) & Stern Quarterdeck Cabin (Ambeng)
+                ctx.strokeStyle = '#92400e';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(-98, -16);
+                ctx.lineTo(-158, -42);
+                ctx.stroke();
+
+                ctx.fillStyle = '#451a03';
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 1.5;
+                ctx.fillRect(42, -38, 62, 24);
+                ctx.strokeRect(42, -38, 62, 24);
+
+                // Phinisi Clipper Hull with Gold Carvings
+                const phinisiGrad = ctx.createLinearGradient(0, -18, 0, 44);
+                phinisiGrad.addColorStop(0, '#92400e');
+                phinisiGrad.addColorStop(0.5, '#5c2409');
+                phinisiGrad.addColorStop(1, '#1c0a02');
+                ctx.fillStyle = phinisiGrad;
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(-125, -22);
+                ctx.lineTo(118, -22);
+                ctx.lineTo(126, -34);
+                ctx.lineTo(92, 42);
+                ctx.lineTo(-88, 42);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Decorative Brass Portholes along Hull
+                for (let px = -70; px <= 70; px += 28) {
+                    ctx.fillStyle = '#fef08a';
+                    ctx.beginPath();
+                    ctx.arc(px, -2, 3.8, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.fillStyle = '#fef08a';
+                ctx.font = 'bold 13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(mapData.completed ? '⚓ Phinisi Malin Kundang (Impuls Teredam Aman)' : '🌊 Gelombang Momentum Menghantam Pesisir!', 0, -148);
+                ctx.restore();
+
+                drawRealisticWater(840, groundY - 22, 520, 115, t);
+            } else if (mapData.id === 'map5') {
+                // Map Final: Grand Kelir Wayang Stage, Blencong Oil Lamp, Gamelan Gong Rack & Golden Cakra Mandala
+                const stageX = 1080;
+
+                ctx.save();
+                // Illuminated White Cotton Kelir Screen & Carved Teak Plengkung Frame
+                const kelirGrad = ctx.createRadialGradient(stageX, groundY - 130, 15, stageX, groundY - 130, 175);
+                kelirGrad.addColorStop(0, 'rgba(254, 249, 195, 0.28)');
+                kelirGrad.addColorStop(0.7, 'rgba(234, 179, 8, 0.08)');
+                kelirGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = kelirGrad;
+                ctx.fillRect(stageX - 185, groundY - 250, 370, 245);
+
+                // Banana Trunk Base (Debog Pisang) & Carved Wooden Stage Frame
+                ctx.fillStyle = '#3f6212';
+                ctx.strokeStyle = '#ca8a04';
+                ctx.lineWidth = 2;
+                ctx.fillRect(stageX - 175, groundY - 18, 350, 18);
+                ctx.strokeRect(stageX - 175, groundY - 18, 350, 18);
+
+                // Traditional Gamelan Gong Ageng Rack on Stage Left (x = stageX - 155)
+                ctx.strokeStyle = '#b45309';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(stageX - 185, groundY - 18);
+                ctx.lineTo(stageX - 185, groundY - 115);
+                ctx.lineTo(stageX - 125, groundY - 115);
+                ctx.lineTo(stageX - 125, groundY - 18);
+                ctx.stroke();
+
+                ctx.fillStyle = '#eab308';
+                ctx.beginPath();
+                ctx.arc(stageX - 155, groundY - 68, 22, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#fef08a';
+                ctx.beginPath();
+                ctx.arc(stageX - 155, groundY - 68, 7, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Rotating Astrolabe Cakra Jagat Mandala
+                ctx.translate(stageX, groundY - 132);
+                ctx.rotate(mapData.completed ? t * 1.8 : Math.sin(t) * 0.2);
+
+                ctx.strokeStyle = mapData.completed ? '#fde047' : '#a855f7';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.arc(0, 0, 86, 0, Math.PI * 2);
+                ctx.stroke();
+
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.arc(0, 0, 56, 0, Math.PI * 2);
+                ctx.stroke();
+
+                for (let i = 0; i < 12; i++) {
+                    ctx.rotate(Math.PI / 6);
+                    ctx.beginPath();
+                    ctx.moveTo(18, 0);
+                    ctx.lineTo(86, 0);
+                    ctx.stroke();
+
+                    ctx.fillStyle = mapData.completed ? '#facc15' : '#c084fc';
+                    ctx.beginPath();
+                    ctx.arc(86, 0, 5.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+
+                ctx.fillStyle = '#fef08a';
+                ctx.font = 'bold 13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(mapData.completed ? '🌟 Cakra Jagat Parahyangan Selaras (L = 120 kg·m²/s)' : '🎭 Panggung Wayang Golek Agung (Momentum Sudut Kacau)', stageX, groundY - 238);
+            }
+        }
+
+        function drawPerahuPanji(x, y, label) {
+            ctx.save();
+            const t = gameState.time;
+            const bob = Math.sin(t * 2.5) * 3.8;
+            const pitch = Math.cos(t * 2.0) * 0.026;
+            ctx.translate(x + 82, y + 26 + bob);
+            ctx.rotate(pitch);
+            ctx.translate(-82, -26);
+
+            // 1. Waterline Reflection / Ambient Shadow under Hull
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.38)';
+            ctx.beginPath();
+            ctx.ellipse(85, 48, 72, 7, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 2. Bamboo Mast, Yardarms & Rigging Lines
+            ctx.strokeStyle = '#d97706';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(82, 14);
+            ctx.lineTo(82, -88);
+            ctx.stroke();
+
+            // Shroud Rigging Ropes
+            ctx.strokeStyle = 'rgba(254, 240, 138, 0.55)';
+            ctx.lineWidth = 1.3;
+            ctx.beginPath();
+            ctx.moveTo(82, -82); ctx.lineTo(24, 12);
+            ctx.moveTo(82, -82); ctx.lineTo(142, 12);
+            ctx.stroke();
+
+            // 3. Billowing Traditional Nusantara Tanja Sail (Layar Terkubung) with Bamboo Battens
+            const sailGrad = ctx.createLinearGradient(76, -80, 148, -12);
+            sailGrad.addColorStop(0, '#fef9c3');
+            sailGrad.addColorStop(0.55, '#fde047');
+            sailGrad.addColorStop(1, '#d97706');
+            ctx.fillStyle = sailGrad;
+            ctx.strokeStyle = '#92400e';
+            ctx.lineWidth = 1.8;
+
+            ctx.beginPath();
+            ctx.moveTo(78, -80);
+            ctx.quadraticCurveTo(136, -54, 148, -14);
+            ctx.quadraticCurveTo(110, -18, 78, -10);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Horizontal Bamboo Sail Battens (Reng Layar) & Sun Emblem
+            ctx.strokeStyle = 'rgba(146, 64, 14, 0.45)';
+            ctx.lineWidth = 1.4;
+            for (let by = -64; by <= -24; by += 13) {
+                ctx.beginPath();
+                ctx.moveTo(79, by);
+                ctx.quadraticCurveTo(112, by + 3, 136 + (by + 45) * 0.25, by + 10);
+                ctx.stroke();
+            }
+
+            // Pennant Flag (Panji Nusantara) fluttering atop the mast
+            const flagWave = Math.sin(t * 6) * 4;
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.moveTo(82, -88);
+            ctx.quadraticCurveTo(100, -92 + flagWave, 118, -84 + flagWave);
+            ctx.lineTo(82, -79);
+            ctx.closePath();
+            ctx.fill();
+
+            // 4. Deck Shelter Canopy (Kajang Anyaman Bambu)
+            const kajangGrad = ctx.createLinearGradient(44, -8, 44, 14);
+            kajangGrad.addColorStop(0, '#a16207');
+            kajangGrad.addColorStop(1, '#451a03');
+            ctx.fillStyle = kajangGrad;
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.moveTo(42, 12);
+            ctx.quadraticCurveTo(64, -8, 86, 12);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // 5. Realistic Carved Teak Timber Hull with Naga/Garuda Prow Figurehead
+            const hullGrad = ctx.createLinearGradient(0, 4, 0, 48);
+            hullGrad.addColorStop(0, '#b45309');
+            hullGrad.addColorStop(0.5, '#78350f');
+            hullGrad.addColorStop(1, '#271206');
+            ctx.fillStyle = hullGrad;
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 2.2;
+
+            ctx.beginPath();
+            // Ornate Curved Naga Prow (Haluan Ukir)
+            ctx.moveTo(-18, -14);
+            ctx.bezierCurveTo(-24, -26, -8, -32, -4, -18);
+            ctx.quadraticCurveTo(4, 10, 18, 12);
+            ctx.lineTo(148, 12);
+            // High Majapahit Stern Post (Buritan)
+            ctx.quadraticCurveTo(164, -2, 174, -14);
+            ctx.quadraticCurveTo(170, 16, 154, 28);
+            ctx.lineTo(136, 46);
+            ctx.lineTo(24, 46);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Glowing Prow Lantern hanging from the Dragon Figurehead
+            const prowGlow = ctx.createRadialGradient(-16, -8, 1, -16, -8, 16);
+            prowGlow.addColorStop(0, 'rgba(253, 224, 71, 0.95)');
+            prowGlow.addColorStop(1, 'rgba(234, 179, 8, 0)');
+            ctx.fillStyle = prowGlow;
+            ctx.beginPath();
+            ctx.arc(-16, -8, 16, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#fef08a';
+            ctx.beginPath();
+            ctx.arc(-16, -8, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Clinker Wood Plank Lines & Gold Relief Trim along Hull
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.45)';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.moveTo(8, 22); ctx.lineTo(152, 22);
+            ctx.moveTo(16, 33); ctx.lineTo(144, 33);
+            ctx.stroke();
+
+            // Quarter Rudder (Kemudi Samping Nusantara) & Outrigger Float (Cadik)
+            ctx.fillStyle = '#451a03';
+            ctx.strokeStyle = '#ca8a04';
+            ctx.lineWidth = 1.5;
+            // Side Rudder Blade
+            ctx.beginPath();
+            ctx.moveTo(144, 16);
+            ctx.lineTo(162, 48);
+            ctx.lineTo(152, 50);
+            ctx.lineTo(138, 18);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Curved Outrigger Cross-Beams (Barat Cadik) & Bamboo Float
+            ctx.strokeStyle = '#78350f';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(48, 24); ctx.lineTo(42, 42);
+            ctx.moveTo(116, 24); ctx.lineTo(122, 42);
+            ctx.stroke();
+
+            const cadikGrad = ctx.createLinearGradient(28, 38, 28, 46);
+            cadikGrad.addColorStop(0, '#eab308');
+            cadikGrad.addColorStop(1, '#854d0e');
+            ctx.fillStyle = cadikGrad;
+            ctx.beginPath();
+            ctx.roundRect(28, 39, 108, 6, 3);
+            ctx.fill();
+
+            // Label
+            ctx.fillStyle = '#fde047';
+            ctx.font = 'bold 12px "Plus Jakarta Sans"';
+            ctx.textAlign = 'center';
+            ctx.fillText(`⛵ ${label}`, 82, -98);
+            ctx.restore();
+        }
+
+        function drawGapuraPortal(x, y, isUnlocked) {
+            ctx.save();
+            ctx.translate(x, y);
+            const t = gameState.time;
+
+            // 1. Stone Guardian Pedestals & Glowing Braziers at Base
+            ctx.fillStyle = '#44403c';
+            ctx.fillRect(-14, 96, 104, 14);
+
+            // 2. Authentic Majapahit Red-Brick & Andesite Split Gate (Candi Bentar)
+            const brickGrad = ctx.createLinearGradient(0, 0, 0, 110);
+            brickGrad.addColorStop(0, '#9a3412');
+            brickGrad.addColorStop(0.55, '#7c2d12');
+            brickGrad.addColorStop(1, '#431407');
+            ctx.fillStyle = brickGrad;
+            ctx.strokeStyle = isUnlocked ? '#fde047' : '#a8a29e';
+            ctx.lineWidth = 2;
+
+            // Left Split Tower with Stepped Cornices
+            ctx.beginPath();
+            ctx.moveTo(24, 0);
+            ctx.lineTo(24, 110);
+            ctx.lineTo(-10, 110);
+            ctx.lineTo(-10, 84);
+            ctx.lineTo(-2, 84);
+            ctx.lineTo(-2, 52);
+            ctx.lineTo(6, 52);
+            ctx.lineTo(6, 22);
+            ctx.lineTo(14, 22);
+            ctx.lineTo(14, 0);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Right Split Tower with Stepped Cornices
+            ctx.beginPath();
+            ctx.moveTo(52, 0);
+            ctx.lineTo(52, 110);
+            ctx.lineTo(86, 110);
+            ctx.lineTo(86, 84);
+            ctx.lineTo(78, 84);
+            ctx.lineTo(78, 52);
+            ctx.lineTo(70, 52);
+            ctx.lineTo(70, 22);
+            ctx.lineTo(62, 22);
+            ctx.lineTo(62, 0);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Horizontal Andesite Stone Moulding Bands on Both Towers
+            ctx.fillStyle = '#78716c';
+            [22, 52, 84].forEach((by, i) => {
+                const inset = (3 - i) * 7;
+                ctx.fillRect(-10 + inset, by - 4, 34 - inset, 5);
+                ctx.fillRect(52, by - 4, 34 - inset, 5);
+            });
+
+            // 3. Mystical Swirling Portal Vortex inside the Candi Bentar Passage
+            if (isUnlocked) {
+                const grad = ctx.createLinearGradient(24, 8, 52, 110);
+                grad.addColorStop(0, 'rgba(253, 224, 71, 0.92)');
+                grad.addColorStop(0.5, 'rgba(245, 158, 11, 0.78)');
+                grad.addColorStop(1, 'rgba(234, 88, 12, 0.92)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(25, 10, 26, 100);
+
+                // Rising Golden Energy Runes inside Portal
+                ctx.fillStyle = '#ffffff';
+                for (let p = 0; p < 5; p++) {
+                    const py = 105 - ((t * 45 + p * 20) % 92);
+                    const px = 30 + ((p * 7) % 16);
+                    ctx.beginPath();
+                    ctx.arc(px, py, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            } else {
+                // Dark Locked Energy Barrier
+                ctx.fillStyle = 'rgba(28, 25, 23, 0.75)';
+                ctx.fillRect(25, 18, 26, 92);
+            }
+
+            ctx.fillStyle = isUnlocked ? '#fde047' : '#a8a29e';
+            ctx.font = 'bold 12px "Plus Jakarta Sans"';
+            ctx.textAlign = 'center';
+            ctx.fillText(isUnlocked ? '✨ GAPURA TERBUKA' : '🔒 GAPURA TERKUNCI', 38, -14);
+            ctx.restore();
+        }
+
+        function drawArticulatedLimb(ctx, x1, y1, x2, y2, x3, y3, upperWidth, lowerWidth, upperColor, lowerColor, jointColor) {
+            ctx.save();
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Upper segment
+            ctx.strokeStyle = upperColor;
+            ctx.lineWidth = upperWidth;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+
+            // Lower segment
+            ctx.strokeStyle = lowerColor;
+            ctx.lineWidth = lowerWidth;
+            ctx.beginPath();
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x3, y3);
+            ctx.stroke();
+
+            // Joint highlight
+            if (jointColor) {
+                ctx.fillStyle = jointColor;
+                ctx.beginPath();
+                ctx.arc(x2, y2, lowerWidth * 0.45, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        function drawNPC(npc, isSolved, mapId) {
+            ctx.save();
+            const t = gameState.time;
+            const breathe = Math.sin(t * 2.4) * 1.6;
+            const sway = Math.cos(t * 1.8) * 1.2;
+            const isBlinking = (Math.floor(t * 12) % 38) === 0;
+
+            // Anchor at bottom center of NPC feet
+            ctx.translate(npc.x + npc.w / 2, npc.y + npc.h);
+
+            // 1. Realistic Soft Layered Ground Shadow
+            const shadowGrad = ctx.createRadialGradient(0, 0, 4, 0, 0, 28);
+            shadowGrad.addColorStop(0, 'rgba(0, 0, 0, 0.65)');
+            shadowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = shadowGrad;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 28, 7, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 2. Subtle Golden/Emerald Rim Aura behind character
+            const auraGrad = ctx.createRadialGradient(0, -38, 6, 0, -38, 48);
+            auraGrad.addColorStop(0, isSolved ? 'rgba(74, 222, 128, 0.32)' : 'rgba(250, 204, 21, 0.28)');
+            auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = auraGrad;
+            ctx.beginPath();
+            ctx.arc(0, -38, 48, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Face towards Arya dynamically
+            const lookDir = (player.x < npc.x) ? -1 : 1;
+            ctx.save();
+            ctx.scale(lookDir, 1);
+
+            // Character-specific anatomical & costume configuration
+            let skinLight = '#f3c69f';
+            let skinMid = '#d99b66';
+            let skinDark = '#a66c38';
+            let scaleBody = 1.0;
+
+            if (mapId === 'map2') {
+                // Bima (Werkudara) is tall & muscular
+                scaleBody = 1.12;
+                skinLight = '#e5a97c';
+                skinMid = '#c68252';
+            } else if (mapId === 'map3') {
+                // Roro Jonggrang has graceful royal Javanese complexion
+                skinLight = '#fde2c4';
+                skinMid = '#eab688';
+            }
+
+            ctx.scale(scaleBody, scaleBody);
+
+            // 3. Feet, Ankles & Lower Jarik/Sarung Drapery
+            ctx.fillStyle = skinMid;
+            ctx.beginPath();
+            ctx.ellipse(-6, -3, 6, 3, 0, 0, Math.PI * 2);
+            ctx.ellipse(7, -3, 6, 3, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Detailed Batik Lower Garment (Kain Jarik / Kampuh Poleng / Songket)
+            const jarikGrad = ctx.createLinearGradient(-15, -34, 15, -4);
+            if (mapId === 'map2') {
+                // Bima's Kampuh Poleng (Black & White checkered sacred cloth)
+                jarikGrad.addColorStop(0, '#1c1917');
+                jarikGrad.addColorStop(0.5, '#e7e5e4');
+                jarikGrad.addColorStop(1, '#1c1917');
+            } else if (mapId === 'map3') {
+                // Roro Jonggrang's Royal Silk Jarik
+                jarikGrad.addColorStop(0, '#581c87');
+                jarikGrad.addColorStop(1, '#3b0764');
+            } else if (mapId === 'map4') {
+                // Minang Songket Gold/Emerald
+                jarikGrad.addColorStop(0, '#065f46');
+                jarikGrad.addColorStop(1, '#022c22');
+            } else {
+                // Traditional Sogan Batik Brown
+                jarikGrad.addColorStop(0, '#451a03');
+                jarikGrad.addColorStop(1, '#271206');
+            }
+
+            ctx.fillStyle = jarikGrad;
+            ctx.strokeStyle = '#eab308';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.moveTo(-12, -34);
+            ctx.lineTo(12, -34);
+            ctx.quadraticCurveTo(16, -18, 13, -4);
+            ctx.lineTo(-13, -4);
+            ctx.quadraticCurveTo(-16, -18, -12, -34);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Diagonal Batik Parang / Songket Gold Fold Lines
+            ctx.strokeStyle = 'rgba(253, 224, 71, 0.45)';
+            ctx.lineWidth = 1.2;
+            for (let fy = -29; fy <= -9; fy += 6) {
+                ctx.beginPath();
+                ctx.moveTo(-10, fy);
+                ctx.lineTo(10, fy + 4);
+                ctx.stroke();
+            }
+
+            // Center Pleated Drapery (Wiru)
+            ctx.fillStyle = '#ca8a04';
+            ctx.fillRect(-2.5, -34, 5, 29);
+
+            // 4. Upper Body (Torso, Chest, Shoulders & Attire)
+            ctx.save();
+            ctx.translate(0, breathe);
+
+            // Back Arm holding cultural artifact / gesturing
+            const backHandX = -17 + sway;
+            const backHandY = -28;
+            drawArticulatedLimb(
+                ctx,
+                -11, -52,
+                -16, -40,
+                backHandX, backHandY,
+                6.5, 5.2,
+                mapId === 'map2' || mapId === 'map3' ? skinMid : '#292524',
+                mapId === 'map2' || mapId === 'map3' ? skinLight : '#44403c',
+                '#d97706'
+            );
+
+            // Anatomical Torso Silhouette (V-tapered or graceful waist)
+            const torsoGrad = ctx.createLinearGradient(-15, -56, 15, -32);
+            if (mapId === 'map1') {
+                // Sangkuriang: Indigo Sundanese Pangsi Tunic
+                torsoGrad.addColorStop(0, '#1e3a8a');
+                torsoGrad.addColorStop(1, '#172554');
+            } else if (mapId === 'map2') {
+                // Bima: Bare muscular chest with golden Nagabanda necklace
+                torsoGrad.addColorStop(0, skinLight);
+                torsoGrad.addColorStop(1, skinMid);
+            } else if (mapId === 'map3') {
+                // Roro Jonggrang: Royal Velvet Kemben with gold embroidery
+                torsoGrad.addColorStop(0, '#7e22ce');
+                torsoGrad.addColorStop(1, '#4c1d95');
+            } else if (mapId === 'map4') {
+                // Malin Kundang / Pesisir: Teluk Belanga Malay Tunic
+                torsoGrad.addColorStop(0, '#047857');
+                torsoGrad.addColorStop(1, '#064e3b');
+            } else {
+                // Ki Dalang: Beskap Jawi Jangkep Velvet Black & Gold
+                torsoGrad.addColorStop(0, '#292524');
+                torsoGrad.addColorStop(1, '#0c0a09');
+            }
+
+            ctx.fillStyle = torsoGrad;
+            ctx.strokeStyle = '#facc15';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            if (mapId === 'map3') {
+                // Exposed graceful shoulders & neck for Roro Jonggrang
+                ctx.fillStyle = skinLight;
+                ctx.beginPath();
+                ctx.roundRect(-11, -55, 22, 12, 4);
+                ctx.fill();
+                // Kemben bodice
+                ctx.fillStyle = torsoGrad;
+                ctx.beginPath();
+                ctx.moveTo(-11, -47);
+                ctx.lineTo(11, -47);
+                ctx.lineTo(9, -32);
+                ctx.lineTo(-9, -32);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            } else {
+                ctx.moveTo(-14, -55);
+                ctx.lineTo(14, -55);
+                ctx.lineTo(11, -32);
+                ctx.lineTo(-11, -32);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            // Bima's Pectoral Muscle Definition & Golden Kalung Nagabanda
+            if (mapId === 'map2') {
+                ctx.strokeStyle = skinDark;
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.moveTo(-9, -46); ctx.quadraticCurveTo(-4, -44, -1, -47);
+                ctx.moveTo(9, -46); ctx.quadraticCurveTo(4, -44, 1, -47);
+                ctx.stroke();
+            }
+
+            // Ornate Collar / Kalung Ulur / Golden Belt (Pending)
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 2.2;
+            ctx.beginPath();
+            ctx.arc(0, -54, 7, 0.2, Math.PI - 0.2);
+            ctx.stroke();
+
+            // Waist Belt & Golden Pending Buckle
+            ctx.fillStyle = '#b45309';
+            ctx.fillRect(-11.5, -35, 23, 4);
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.ellipse(0, -33, 5, 3, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 5. Realistic Neck, Head, Facial Structure & Expressions
+            // Neck with subtle shadow
+            ctx.fillStyle = skinDark;
+            ctx.fillRect(-3.5, -62, 7, 8);
+            ctx.fillStyle = skinMid;
+            ctx.fillRect(-3, -62, 5.5, 7);
+
+            // Anatomically contoured head (Jawline + Cranium)
+            const headGrad = ctx.createRadialGradient(2, -69, 2, 0, -68, 12);
+            headGrad.addColorStop(0, skinLight);
+            headGrad.addColorStop(1, skinMid);
+            ctx.fillStyle = headGrad;
+            ctx.beginPath();
+            ctx.moveTo(-8.5, -72);
+            ctx.quadraticCurveTo(-9, -63, -5, -59);
+            ctx.quadraticCurveTo(0, -56, 5.5, -59);
+            ctx.quadraticCurveTo(9.5, -63, 9, -72);
+            ctx.arc(0, -72, 9, 0, Math.PI, true);
+            ctx.closePath();
+            ctx.fill();
+
+            // Ear & Golden Sumping Ornament
+            ctx.fillStyle = skinMid;
+            ctx.beginPath();
+            ctx.ellipse(-8.5, -67, 2.2, 4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.moveTo(-9, -66);
+            ctx.lineTo(-14, -73);
+            ctx.lineTo(-8, -70);
+            ctx.closePath();
+            ctx.fill();
+
+            // Expressive Eyes (Sclera, Iris, Pupil, Eyebrows)
+            ctx.strokeStyle = '#271206';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(-4, -71.5); ctx.quadraticCurveTo(-1.5, -72.8, 0.5, -71.5);
+            ctx.moveTo(3, -71.5); ctx.quadraticCurveTo(5.5, -72.8, 7.5, -71.5);
+            ctx.stroke();
+
+            if (isBlinking) {
+                ctx.strokeStyle = '#271206';
+                ctx.lineWidth = 1.3;
+                ctx.beginPath();
+                ctx.moveTo(-3.5, -68.5); ctx.lineTo(0, -68.5);
+                ctx.moveTo(3.5, -68.5); ctx.lineTo(7, -68.5);
+                ctx.stroke();
+            } else {
+                // White sclera
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.ellipse(-1.8, -68.5, 2.1, 1.4, 0, 0, Math.PI * 2);
+                ctx.ellipse(5.2, -68.5, 2.1, 1.4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Dark iris & pupil
+                ctx.fillStyle = '#1c1917';
+                ctx.beginPath();
+                ctx.arc(-1.4, -68.5, 1.2, 0, Math.PI * 2);
+                ctx.arc(5.6, -68.5, 1.2, 0, Math.PI * 2);
+                ctx.fill();
+                // Eye catchlight
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(-1.8, -69.2, 0.8, 0.8);
+                ctx.fillRect(5.2, -69.2, 0.8, 0.8);
+            }
+
+            // Nose bridge & tip
+            ctx.strokeStyle = skinDark;
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(2.2, -69);
+            ctx.lineTo(3.8, -64.5);
+            ctx.lineTo(1.8, -64);
+            ctx.stroke();
+
+            // Mouth / Moustache / Beard depending on Character
+            if (mapId === 'hub' || mapId === 'map5') {
+                // Ki Dalang Sepuh: Wise white moustache & flowing beard
+                ctx.fillStyle = '#f5f5f4';
+                ctx.beginPath();
+                ctx.moveTo(-2, -62);
+                ctx.quadraticCurveTo(2, -64, 6, -62);
+                ctx.quadraticCurveTo(4, -50, 1.5, -47);
+                ctx.quadraticCurveTo(-2, -50, -2, -62);
+                ctx.fill();
+            } else if (mapId === 'map2') {
+                // Bima: Thick heroic moustache
+                ctx.strokeStyle = '#1c1917';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(-2, -61.5);
+                ctx.quadraticCurveTo(2, -63, 6.5, -61);
+                ctx.stroke();
+            } else {
+                // Serene expression
+                ctx.strokeStyle = mapId === 'map3' ? '#be123c' : '#7c2d12';
+                ctx.lineWidth = 1.4;
+                ctx.beginPath();
+                ctx.arc(2, -61.5, 2.2, 0.15, Math.PI - 0.15);
+                ctx.stroke();
+            }
+
+            // 6. Signature Cultural Headdress / Crown
+            if (mapId === 'hub' || mapId === 'map5') {
+                // Javanese Blangkon Solo with Mondolan
+                ctx.fillStyle = '#292524';
+                ctx.strokeStyle = '#ca8a04';
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.arc(0, -73, 9.5, Math.PI, 0);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = '#b45309';
+                ctx.fillRect(-9.5, -74, 19, 3);
+                ctx.beginPath();
+                ctx.arc(-10, -71, 3.5, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (mapId === 'map1') {
+                // Sangkuriang: Sundanese Iket Barangbang Semplak
+                ctx.fillStyle = '#1e3a8a';
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.moveTo(-10, -72);
+                ctx.lineTo(-4, -83);
+                ctx.lineTo(4, -79);
+                ctx.lineTo(10, -84);
+                ctx.lineTo(9.5, -72);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            } else if (mapId === 'map2') {
+                // Bima: Tall Gelung Supit Urang (Lobster Claw Royal Crown)
+                ctx.fillStyle = '#1c1917';
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.moveTo(-9, -72);
+                ctx.bezierCurveTo(-14, -92, 4, -96, -2, -77);
+                ctx.lineTo(9, -72);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                // GoldenJamang forehead diadem
+                ctx.fillStyle = '#fde047';
+                ctx.fillRect(-9.5, -74, 19, 3.5);
+            } else if (mapId === 'map3') {
+                // Roro Jonggrang: Tiered Golden Prambanan Siger Crown & Hair Bun
+                ctx.fillStyle = '#1c1917';
+                ctx.beginPath();
+                ctx.arc(-8, -71, 5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#fde047';
+                ctx.strokeStyle = '#b45309';
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.moveTo(-9, -72);
+                ctx.lineTo(-6, -82);
+                ctx.lineTo(-2, -77);
+                ctx.lineTo(1, -87);
+                ctx.lineTo(5, -77);
+                ctx.lineTo(9, -81);
+                ctx.lineTo(9, -72);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            } else if (mapId === 'map4') {
+                // Pesisir Minang Destar / Tanjak Nakhoda
+                ctx.fillStyle = '#78350f';
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(-10, -72);
+                ctx.lineTo(-12, -83);
+                ctx.lineTo(0, -86);
+                ctx.lineTo(12, -82);
+                ctx.lineTo(9.5, -72);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            // 7. Front Articulated Arm & Signature Prop (Wayang Golek / Kuku Pancanaka / Keris)
+            const frontElbowX = 11;
+            const frontElbowY = -40;
+            const frontHandX = 18;
+            const frontHandY = -44 + sway;
+
+            drawArticulatedLimb(
+                ctx,
+                9, -51,
+                frontElbowX, frontElbowY,
+                frontHandX, frontHandY,
+                6.5, 5.2,
+                mapId === 'map2' || mapId === 'map3' ? skinMid : '#292524',
+                 skinLight,
+                '#facc15'
+            );
+
+            // Prop in Front Hand
+            if (mapId === 'map2') {
+                // Bima's Glowing Kuku Pancanaka (Sacred Thumbnail)
+                ctx.strokeStyle = '#fef08a';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(frontHandX, frontHandY);
+                ctx.quadraticCurveTo(frontHandX + 9, frontHandY - 4, frontHandX + 6, frontHandY - 12);
+                ctx.stroke();
+            } else {
+                // Ornate Wayang / Cakra Staff held vertically
+                ctx.strokeStyle = '#d97706';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(frontHandX, -2);
+                ctx.lineTo(frontHandX, -68);
+                ctx.stroke();
+
+                // Intricate Finial atop Staff
+                ctx.fillStyle = '#fde047';
+                ctx.beginPath();
+                ctx.moveTo(frontHandX, -80);
+                ctx.lineTo(frontHandX - 6, -70);
+                ctx.lineTo(frontHandX, -65);
+                ctx.lineTo(frontHandX + 6, -70);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            ctx.restore(); // End breathing torso group
+            ctx.restore(); // End lookDir & scale group
+
+            // 8. Floating Nameplate & Status Banner
+            ctx.fillStyle = '#fef08a';
+            ctx.font = 'bold 12px "Plus Jakarta Sans"';
+            ctx.textAlign = 'center';
+            ctx.fillText(npc.name, 0, -98);
+
+            ctx.fillStyle = isSolved ? '#4ade80' : '#facc15';
+            ctx.font = 'bold 13px sans-serif';
+            ctx.fillText(isSolved ? '✔ Takdir Pulih' : '❗ Butuh Bantuan Lontar Cakra', 0, -114);
+            ctx.restore();
+        }
+
+        function drawAryaPlayer() {
+            const cx = player.x + player.width / 2;
+            const cy = player.y + player.height;
+            const t = gameState.time;
+            const isMoving = Math.abs(player.vx) > 0.25;
+            const isAirborne = !player.grounded;
+            const phase = player.walkFrame * 1.35;
+            const breathe = Math.sin(t * 3.2) * 1.4;
+            const isBlinking = (Math.floor(t * 14) % 42) === 0;
+
+            // Body lean forward when running or jumping
+            const torsoLean = isMoving ? 0.11 : (isAirborne ? 0.08 : 0);
+
+            ctx.save();
+
+            // 1. Dynamic Soft Contact Shadow on Ground
+            const shadowScale = player.grounded ? 1 : Math.max(0.3, 1 - (470 - cy) / 260);
+            const shadowGrad = ctx.createRadialGradient(cx, cy - 2, 2, cx, cy - 2, 22 * shadowScale);
+            shadowGrad.addColorStop(0, 'rgba(0, 0, 0, 0.6)');
+            shadowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = shadowGrad;
+            ctx.beginPath();
+            ctx.ellipse(cx, cy - 2, 22 * shadowScale, 5.5 * shadowScale, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Translate to character root (bottom center of feet)
+            ctx.translate(cx, cy);
+            ctx.scale(player.facing, 1);
+
+            // 2. Intricate Floating Lontar Cakra Astrolabe behind Arya's Back
+            ctx.save();
+            const cakraY = -44 + Math.sin(t * 4) * 3.5;
+            ctx.translate(-22, cakraY);
+
+            const cGlow = ctx.createRadialGradient(0, 0, 2, 0, 0, 22);
+            cGlow.addColorStop(0, 'rgba(253, 224, 71, 0.75)');
+            cGlow.addColorStop(0.5, 'rgba(234, 179, 8, 0.25)');
+            cGlow.addColorStop(1, 'rgba(253, 224, 71, 0)');
+            ctx.fillStyle = cGlow;
+            ctx.beginPath();
+            ctx.arc(0, 0, 22, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Outer & Counter-Rotating Inner Brass Rings
+            ctx.save();
+            ctx.rotate(t * 2.0);
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(0, 0, 13, 0, Math.PI * 2);
+            ctx.stroke();
+            for (let s = 0; s < 8; s++) {
+                ctx.rotate(Math.PI / 4);
+                ctx.beginPath();
+                ctx.moveTo(9, 0);
+                ctx.lineTo(15, 0);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            ctx.save();
+            ctx.rotate(-t * 3.2);
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.arc(0, 0, 7, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = '#fef08a';
+            ctx.beginPath();
+            ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            ctx.restore();
+
+            // 3. Flowing Golden Silk Selendang (Sampur Scarf with physics wave)
+            ctx.save();
+            const scarfWave1 = Math.sin(t * 6.5) * 4 + (isMoving ? -10 : 0);
+            const scarfWave2 = Math.cos(t * 5.5) * 5 + (isMoving ? -15 : 0);
+            const scarfGrad = ctx.createLinearGradient(-4, -36, -34, -22);
+            scarfGrad.addColorStop(0, '#ca8a04');
+            scarfGrad.addColorStop(0.6, '#fde047');
+            scarfGrad.addColorStop(1, '#eab308');
+            ctx.fillStyle = scarfGrad;
+            ctx.beginPath();
+            ctx.moveTo(-5, -36 + breathe);
+            ctx.bezierCurveTo(-16, -36 + scarfWave1 * 0.5, -26, -30 + scarfWave1, -35, -22 + scarfWave2);
+            ctx.lineTo(-31, -16 + scarfWave2);
+            ctx.bezierCurveTo(-22, -24 + scarfWave1, -13, -30, -4, -31 + breathe);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+
+            // 4. Kinematic Leg Coordinates (Hip -> Knee -> Ankle -> Foot)
+            const hipY = -28;
+            let bHipAngle = 0, bKneeAngle = 0, fHipAngle = 0, fKneeAngle = 0;
+
+            if (isAirborne) {
+                // Dynamic mid-air jump/fall pose
+                bHipAngle = -0.35; bKneeAngle = 0.65;
+                fHipAngle = 0.45;  fKneeAngle = 0.55;
+            } else if (isMoving) {
+                // Realistic Running / Walking Stride Cycle
+                fHipAngle = Math.sin(phase) * 0.58;
+                fKneeAngle = Math.max(0, Math.sin(phase - 0.8) * 0.75);
+                bHipAngle = Math.sin(phase + Math.PI) * 0.58;
+                bKneeAngle = Math.max(0, Math.sin(phase + Math.PI - 0.8) * 0.75);
+            }
+
+            const thighLen = 13;
+            const calfLen = 13;
+
+            // Helper to render a complete realistic leg with Celana Panji, Knee Wrap & Sandals
+            function renderLeg(hipX, hipAngle, kneeAngle, isFront) {
+                const kneeX = hipX + Math.sin(hipAngle) * thighLen;
+                const kneeY = hipY + Math.cos(hipAngle) * thighLen;
+                const ankleX = kneeX + Math.sin(hipAngle - kneeAngle) * calfLen;
+                const ankleY = kneeY + Math.cos(hipAngle - kneeAngle) * calfLen;
+
+                const pantsColor = isFront ? '#451a03' : '#271206';
+                const calfColor = isFront ? '#d99b66' : '#b87d4b';
+
+                drawArticulatedLimb(
+                    ctx,
+                    hipX, hipY,
+                    kneeX, kneeY,
+                    ankleX, ankleY,
+                    8.5, 6.2,
+                    pantsColor,
+                    calfColor,
+                    '#ca8a04'
+                );
+
+                // Golden Knee Band (Celana Panji cuff)
+                ctx.fillStyle = '#eab308';
+                ctx.beginPath();
+                ctx.arc(kneeX, kneeY, 3.6, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Anatomically angled foot & traditional leather strap sandal (Terompah)
+                ctx.save();
+                ctx.translate(ankleX, ankleY);
+                ctx.rotate((hipAngle - kneeAngle) * 0.35);
+                ctx.fillStyle = calfColor;
+                ctx.beginPath();
+                ctx.ellipse(2.5, 0, 5.5, 2.6, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Sandal sole & strap
+                ctx.fillStyle = '#292524';
+                ctx.fillRect(-3, 1.5, 11, 2);
+                ctx.strokeStyle = '#b45309';
+                ctx.lineWidth = 1.4;
+                ctx.beginPath();
+                ctx.moveTo(0, 1.5);
+                ctx.lineTo(3, -2);
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Draw Back Leg first
+            renderLeg(-2, bHipAngle, bKneeAngle, false);
+
+            // 5. Back Arm (Shoulder -> Elbow -> Forearm -> Hand)
+            ctx.save();
+            ctx.translate(0, breathe);
+            ctx.rotate(torsoLean);
+            const armSwing = isMoving ? Math.sin(phase) * 0.55 : (isAirborne ? -0.5 : 0.08);
+
+            const bShoulderX = -3, bShoulderY = -49;
+            const bElbowX = bShoulderX + Math.sin(-armSwing) * 10;
+            const bElbowY = bShoulderY + Math.cos(-armSwing) * 10;
+            const bWristX = bElbowX + Math.sin(-armSwing + 0.45) * 10;
+            const bWristY = bElbowY + Math.cos(-armSwing + 0.45) * 10;
+
+            drawArticulatedLimb(
+                ctx,
+                bShoulderX, bShoulderY,
+                bElbowX, bElbowY,
+                bWristX, bWristY,
+                6.2, 4.8,
+                '#78350f',
+                '#c68252',
+                '#92400e'
+            );
+            ctx.fillStyle = '#c68252';
+            ctx.beginPath();
+            ctx.arc(bWristX, bWristY, 2.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // Draw Front Leg
+            renderLeg(2, fHipAngle, fKneeAngle, true);
+
+            // 6. Torso: Beskap Cantrik Tunic, Batik Parang Sash & Keris Hilt at Waist
+            ctx.save();
+            ctx.translate(0, breathe);
+            ctx.rotate(torsoLean);
+
+            // Pleated Batik Kain Jarik Hip Wrap (Supit Urang style above knees)
+            const hipWrapGrad = ctx.createLinearGradient(-11, -32, 11, -18);
+            hipWrapGrad.addColorStop(0, '#451a03');
+            hipWrapGrad.addColorStop(1, '#78350f');
+            ctx.fillStyle = hipWrapGrad;
+            ctx.strokeStyle = '#eab308';
+            ctx.lineWidth = 1.3;
+            ctx.beginPath();
+            ctx.moveTo(-10, -32);
+            ctx.lineTo(10, -32);
+            ctx.lineTo(12, -20);
+            ctx.quadraticCurveTo(0, -16, -11, -21);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Anatomically tapered Beskap Tunic
+            const tunicGrad = ctx.createLinearGradient(-12, -52, 12, -30);
+            tunicGrad.addColorStop(0, '#b45309');
+            tunicGrad.addColorStop(0.5, '#92400e');
+            tunicGrad.addColorStop(1, '#451a03');
+            ctx.fillStyle = tunicGrad;
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(-11, -51);
+            ctx.lineTo(11, -51);
+            ctx.lineTo(9.5, -30);
+            ctx.lineTo(-9.5, -30);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Diagonal Batik Parang Sash across Chest
+            ctx.strokeStyle = '#fef08a';
+            ctx.lineWidth = 3.2;
+            ctx.beginPath();
+            ctx.moveTo(-9, -50);
+            ctx.lineTo(8, -32);
+            ctx.stroke();
+            ctx.strokeStyle = '#78350f';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(-9, -50);
+            ctx.lineTo(8, -32);
+            ctx.stroke();
+
+            // Waist Stagen Belt & Golden Pending Buckle
+            ctx.fillStyle = '#7f1d1d';
+            ctx.fillRect(-10, -33, 20, 4.5);
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.ellipse(1, -30.8, 4.2, 2.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 7. Neck, Sculpted Head, Expressive Face & Traditional Sundanese/Javanese Iket
+            // Neck with shading
+            ctx.fillStyle = '#b87d4b';
+            ctx.fillRect(-3, -57, 6, 7);
+            ctx.fillStyle = '#e5a97c';
+            ctx.fillRect(-2.5, -57, 4.8, 6);
+
+            // Head with defined jawline & warm skin gradient
+            const faceGrad = ctx.createRadialGradient(3, -64, 2, 0, -63, 11);
+            faceGrad.addColorStop(0, '#fde2c4');
+            faceGrad.addColorStop(1, '#d99b66');
+            ctx.fillStyle = faceGrad;
+            ctx.beginPath();
+            ctx.moveTo(-8, -66);
+            ctx.quadraticCurveTo(-8.5, -58, -4.5, -54.5);
+            ctx.quadraticCurveTo(1, -52, 6, -55);
+            ctx.quadraticCurveTo(9, -59, 8.5, -66);
+            ctx.arc(0, -66, 8.5, 0, Math.PI, true);
+            ctx.closePath();
+            ctx.fill();
+
+            // Ear
+            ctx.fillStyle = '#d99b66';
+            ctx.beginPath();
+            ctx.ellipse(-6.5, -62, 2, 3.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Hair sideburn locks
+            ctx.fillStyle = '#1c1917';
+            ctx.beginPath();
+            ctx.moveTo(-5, -66);
+            ctx.lineTo(-4, -59);
+            ctx.lineTo(-6.5, -61);
+            ctx.closePath();
+            ctx.fill();
+
+            // Determined Eyebrow & Realistic Eye (with Blinking & Catchlight)
+            ctx.strokeStyle = '#1c1917';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(1.5, -65.5);
+            ctx.quadraticCurveTo(4.5, -66.8, 7.2, -65.2);
+            ctx.stroke();
+
+            if (isBlinking) {
+                ctx.beginPath();
+                ctx.moveTo(2, -62.5);
+                ctx.lineTo(6.5, -62.5);
+                ctx.stroke();
+            } else {
+                // Sclera
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.ellipse(4.4, -62.5, 2.2, 1.5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Warm dark brown iris & pupil
+                ctx.fillStyle = '#271206';
+                ctx.beginPath();
+                ctx.arc(4.8, -62.5, 1.3, 0, Math.PI * 2);
+                ctx.fill();
+                // Bright eye reflection dot
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(4.3, -63.3, 0.9, 0.9);
+            }
+
+            // Sculpted Nose & Confident Smile
+            ctx.strokeStyle = '#a66c38';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(6.8, -63);
+            ctx.lineTo(8.5, -59.5);
+            ctx.lineTo(6.5, -59);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#7c2d12';
+            ctx.lineWidth = 1.3;
+            ctx.beginPath();
+            ctx.arc(4.5, -56.8, 2.2, 0.1, Math.PI * 0.75);
+            ctx.stroke();
+
+            // Detailed Batik Headband (Iket Cantrik Parahyangan) with Layered Folds & Udeng Knot
+            const iketGrad = ctx.createLinearGradient(-9, -74, 9, -65);
+            iketGrad.addColorStop(0, '#451a03');
+            iketGrad.addColorStop(1, '#271206');
+            ctx.fillStyle = iketGrad;
+            ctx.beginPath();
+            ctx.moveTo(-9, -66);
+            ctx.quadraticCurveTo(-9, -75, 0, -75);
+            ctx.quadraticCurveTo(9, -74, 9, -66);
+            ctx.closePath();
+            ctx.fill();
+
+            // Golden Batik Trim Band & Center Jewel Emblem
+            ctx.fillStyle = '#eab308';
+            ctx.fillRect(-9, -68, 18, 2.8);
+            ctx.fillStyle = '#fef08a';
+            ctx.beginPath();
+            ctx.arc(6, -66.6, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Flowing Udeng Ribbon Tails at the back of the head
+            const tailWave = Math.sin(t * 7) * 2.5;
+            ctx.fillStyle = '#b45309';
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(-8.5, -67);
+            ctx.lineTo(-16, -71 + tailWave);
+            ctx.lineTo(-14, -64 + tailWave);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // 8. Front Articulated Arm (Shoulder -> Elbow -> Forearm -> Hand with Golden Gelang)
+            const fShoulderX = 2, fShoulderY = -48;
+            const fElbowX = fShoulderX + Math.sin(armSwing) * 10;
+            const fElbowY = fShoulderY + Math.cos(armSwing) * 10;
+            const fWristX = fElbowX + Math.sin(armSwing + 0.5) * 10;
+            const fWristY = fElbowY + Math.cos(armSwing + 0.5) * 10;
+
+            drawArticulatedLimb(
+                ctx,
+                fShoulderX, fShoulderY,
+                fElbowX, fElbowY,
+                fWristX, fWristY,
+                6.5, 5.0,
+                '#92400e',
+                '#eab688',
+                '#b45309'
+            );
+
+            // Golden Wrist Bracer (Gelang Bahu/Pergelangan) & Hand
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.arc(fWristX, fWristY, 2.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#fde2c4';
+            ctx.beginPath();
+            ctx.arc(fWristX + 1.2, fWristY + 1, 2.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore(); // End torso group
+            ctx.restore(); // End player root group
+
+            // Player Overhead Tag
+            ctx.fillStyle = '#fde047';
+            ctx.font = 'bold 11px "Plus Jakarta Sans"';
+            ctx.textAlign = 'center';
+            ctx.fillText('ARYA', cx, player.y - 10);
+        }
+
+        function handleInteractKey() {
+            const target = checkInteractiveProximity();
+            const mapData = MAPS_DATA[gameState.currentMapId];
+
+            if (target === 'npc') {
+                openDialogueModal(mapData);
+            } else if (target === 'boat') {
+                toggleWorldMapModal();
+            } else if (target === 'portal') {
+                if (mapData.completed) {
+                    // Advance to next unlocked map or world map
+                    const nextOrder = (mapData.order || 0) + 1;
+                    const nextMapKey = `map${nextOrder}`;
+                    if (MAPS_DATA[nextMapKey] && MAPS_DATA[nextMapKey].unlocked) {
+                        loadMap(nextMapKey);
+                    } else {
+                        toggleWorldMapModal();
+                    }
+                } else {
+                    openDialogueModal(mapData);
+                }
+            } else {
+                // Default fallback if player presses E anywhere: open NPC dialogue if not in hub, or open World Map
+                openDialogueModal(mapData);
+            }
+        }
+
+        function openDialogueModal(mapData) {
+            playGamelanTone(493.88, 0.25, 'sine');
+            document.getElementById('npc-avatar').textContent = mapData.npcAvatar;
+            document.getElementById('npc-name').textContent = mapData.npcName;
+            document.getElementById('npc-physics-topic').textContent = mapData.physicsTopic;
+            document.getElementById('npc-dialogue-text').textContent = mapData.completed
+                ? mapData.dialogueSolved
+                : mapData.dialogueIntro;
+
+            const actionBtn = document.getElementById('btn-dialogue-action-text');
+            if (mapData.id === 'hub') {
+                actionBtn.textContent = 'Buka Peta Layar Perahu Panji';
+            } else if (mapData.completed) {
+                actionBtn.textContent = 'Lihat Simulasi Lontar Cakra Lagi';
+            } else {
+                actionBtn.textContent = 'Aktifkan Lontar Cakra (Pecahkan Fisika)';
+            }
+
+            document.getElementById('dialogue-modal').classList.remove('hidden');
+        }
+
+        function closeDialogueModal() {
+            document.getElementById('dialogue-modal').classList.add('hidden');
+        }
+
+        function triggerDialogueAction() {
+            closeDialogueModal();
+            if (gameState.currentMapId === 'hub') {
+                toggleWorldMapModal();
+            } else {
+                openLontarCakra();
+            }
+        }
+
+        function openLontarCakra() {
+            const mapData = MAPS_DATA[gameState.currentMapId];
+            if (!mapData.puzzle) return;
+
+            playGamelanTone(523.25, 0.3, 'triangle');
+            const p = mapData.puzzle;
+            document.getElementById('cakra-title').textContent = `LONTAR CAKRA — ${mapData.shortName.toUpperCase()}`;
+            document.getElementById('cakra-subtitle').textContent = p.title;
+            document.getElementById('cakra-formula-badge').textContent = p.formulaBadge;
+            document.getElementById('cakra-formula-text').textContent = p.formulaText;
+            document.getElementById('cakra-story-hint').textContent = `💡 Petunjuk Cantrik: ${p.hint}`;
+
+            // Build Sliders
+            const slidersContainer = document.getElementById('cakra-sliders-container');
+            slidersContainer.innerHTML = '';
+            gameState.activeSliderValues = {};
+
+            p.sliders.forEach((s) => {
+                gameState.activeSliderValues[s.id] = s.val;
+                const row = document.createElement('div');
+                row.className = 'flex flex-col gap-1';
+                row.innerHTML = `
+                    <div class="flex justify-between text-xs sm:text-sm">
+                        <label class="font-semibold text-amber-200">${s.label}</label>
+                        <span id="val-label-${s.id}" class="font-bold text-amber-400 font-mono">${s.val} ${s.unit}</span>
+                    </div>
+                    <input type="range" id="slider-${s.id}" min="${s.min}" max="${s.max}" step="${s.step}" value="${s.val}"
+                        class="cakra-slider" oninput="onCakraSliderChange('${s.id}', this.value, '${s.unit}')">
+                `;
+                slidersContainer.appendChild(row);
+            });
+
+            document.getElementById('cakra-modal').classList.remove('hidden');
+            evaluateCurrentCakraState();
+        }
+
+        function closeLontarCakra() {
+            document.getElementById('cakra-modal').classList.add('hidden');
+        }
+
+        function resetCakraSliders() {
+            openLontarCakra();
+        }
+
+        function onCakraSliderChange(id, value, unit) {
+            const numVal = parseFloat(value);
+            gameState.activeSliderValues[id] = numVal;
+            document.getElementById(`val-label-${id}`).textContent = `${numVal} ${unit}`;
+            playGamelanTone(320 + numVal * 4, 0.08, 'sine');
+            evaluateCurrentCakraState();
+        }
+
+        function evaluateCurrentCakraState() {
+            const mapData = MAPS_DATA[gameState.currentMapId];
+            if (!mapData.puzzle) return;
+
+            const result = mapData.puzzle.evaluate(gameState.activeSliderValues);
+            const telContainer = document.getElementById('cakra-telemetry');
+            telContainer.innerHTML = '';
+
+            result.telemetry.forEach((item) => {
+                const div = document.createElement('div');
+                div.className = `p-2.5 rounded-lg border ${item.ok ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-200' : 'bg-red-950/60 border-red-500/50 text-red-200'}`;
+                div.innerHTML = `
+                    <div class="text-[11px] opacity-80">${item.label}</div>
+                    <div class="font-bold font-mono text-xs sm:text-sm mt-0.5">${item.value}</div>
+                `;
+                telContainer.appendChild(div);
+            });
+
+            const badge = document.getElementById('cakra-status-badge');
+            const feedback = document.getElementById('cakra-feedback-box');
+            const btnStabilize = document.getElementById('btn-stabilize-cakra');
+
+            if (result.solved) {
+                badge.className = 'absolute top-2.5 right-2.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-800 text-emerald-100 border border-emerald-400';
+                badge.textContent = '✔ Hukum Alam Seimbang!';
+                feedback.className = 'text-xs sm:text-sm px-3.5 py-2.5 rounded-lg bg-emerald-950/90 border border-emerald-500 text-emerald-200 font-semibold';
+                btnStabilize.disabled = false;
+            } else {
+                badge.className = 'absolute top-2.5 right-2.5 px-3 py-1 rounded-full text-xs font-bold bg-red-900/90 text-red-200 border border-red-400';
+                badge.textContent = '⚠ Belum Seimbang';
+                feedback.className = 'text-xs sm:text-sm px-3.5 py-2.5 rounded-lg bg-amber-950/80 border border-amber-600/40 text-amber-200';
+                btnStabilize.disabled = true;
+            }
+            feedback.textContent = result.feedback;
+
+            drawCakraSimulationPreview(mapData.id, gameState.activeSliderValues, result.solved);
+        }
+
+        function drawCakraSimulationPreview(mapId, vals, solved) {
+            const simCanvas = document.getElementById('cakraSimCanvas');
+            const rect = simCanvas.parentElement.getBoundingClientRect();
+            simCanvas.width = rect.width || 400;
+            simCanvas.height = rect.height || 220;
+            const sctx = simCanvas.getContext('2d');
+            const w = simCanvas.width;
+            const h = simCanvas.height;
+
+            sctx.clearRect(0, 0, w, h);
+
+            // Background Grid
+            sctx.strokeStyle = 'rgba(234, 179, 8, 0.12)';
+            sctx.lineWidth = 1;
+            for (let x = 0; x < w; x += 25) {
+                sctx.beginPath(); sctx.moveTo(x, 0); sctx.lineTo(x, h); sctx.stroke();
+            }
+            for (let y = 0; y < h; y += 25) {
+                sctx.beginPath(); sctx.moveTo(0, y); sctx.lineTo(w, y); sctx.stroke();
+            }
+
+            if (mapId === 'map1') {
+                // Archimedes Buoyancy & Water Flow Diagram
+                const waterY = h * 0.52;
+                sctx.fillStyle = 'rgba(14, 165, 233, 0.45)';
+                sctx.fillRect(0, waterY, w, h - waterY);
+
+                const Fa = 1000 * 10 * vals.vol;
+                const boatOffsetY = Math.max(-28, Math.min(35, (50000 - Fa) / 1000));
+                sctx.save();
+                sctx.translate(w * 0.35, waterY + boatOffsetY);
+                sctx.fillStyle = '#854d0e';
+                sctx.strokeStyle = solved ? '#4ade80' : '#facc15';
+                sctx.lineWidth = 2.5;
+                sctx.beginPath();
+                sctx.moveTo(-55, -18); sctx.lineTo(55, -18); sctx.lineTo(38, 22); sctx.lineTo(-38, 22);
+                sctx.closePath(); sctx.fill(); sctx.stroke();
+
+                // Force Vectors
+                sctx.fillStyle = '#4ade80';
+                sctx.font = 'bold 11px monospace';
+                sctx.textAlign = 'center';
+                sctx.fillText(`↑ Fa = ${Fa.toLocaleString('id-ID')} N`, 0, -26);
+                sctx.fillStyle = '#f87171';
+                sctx.fillText(`↓ W = 50.000 N`, 0, 38);
+                sctx.restore();
+
+                // Dam Pipe Flow on the right
+                sctx.fillStyle = '#38bdf8';
+                const pipeH = vals.area * 5;
+                sctx.fillRect(w * 0.72, waterY - pipeH / 2, vals.vel * 8, pipeH);
+                sctx.fillStyle = '#fef08a';
+                sctx.font = 'bold 11px monospace';
+                sctx.fillText(`Q = ${vals.area * vals.vel} m³/s`, w * 0.72, waterY - pipeH / 2 - 8);
+            } else if (mapId === 'map2') {
+                // Vector Force & Drag Diagram
+                const cx = w * 0.45;
+                const cy = h * 0.55;
+                sctx.fillStyle = '#facc15';
+                sctx.beginPath(); sctx.arc(cx, cy, 18, 0, Math.PI * 2); sctx.fill();
+
+                // Drag Vector Left
+                sctx.strokeStyle = '#f87171';
+                sctx.lineWidth = 4;
+                sctx.beginPath(); sctx.moveTo(cx, cy); sctx.lineTo(cx - 85, cy); sctx.stroke();
+                sctx.fillStyle = '#f87171';
+                sctx.font = 'bold 11px monospace';
+                sctx.fillText(`← F_hambat = ${vals.drag}N`, cx - 115, cy - 10);
+
+                // Thrust Vector at Angle
+                const rad = -(vals.angle * Math.PI) / 180;
+                const len = vals.force / 9;
+                sctx.strokeStyle = '#4ade80';
+                sctx.beginPath();
+                sctx.moveTo(cx, cy);
+                sctx.lineTo(cx + Math.cos(rad) * len, cy + Math.sin(rad) * len);
+                sctx.stroke();
+                sctx.fillStyle = '#4ade80';
+                sctx.fillText(`F=${vals.force}N (${vals.angle}°)`, cx + 25, cy - 25);
+            } else if (mapId === 'map3') {
+                // Torque Lever Balance Diagram
+                const cx = w * 0.5;
+                const cy = h * 0.62;
+                const torqueRight = vals.mass * 10 * vals.arm;
+                const tilt = Math.max(-0.35, Math.min(0.35, (torqueRight - 1200) / 2500));
+
+                sctx.save();
+                sctx.translate(cx, cy);
+                // Fulcrum triangle
+                sctx.fillStyle = '#ca8a04';
+                sctx.beginPath(); sctx.moveTo(0, 0); sctx.lineTo(-18, 32); sctx.lineTo(18, 32); sctx.closePath(); sctx.fill();
+
+                // Rotating Beam
+                sctx.rotate(tilt);
+                sctx.fillStyle = '#fef08a';
+                sctx.fillRect(-125, -6, 250, 8);
+
+                // Left Candi Monolith (1200 N.m)
+                sctx.fillStyle = '#78716c';
+                sctx.fillRect(-115, -42, 42, 36);
+                sctx.fillStyle = '#fde047';
+                sctx.font = 'bold 10px monospace';
+                sctx.fillText('τ_kiri=1200', -120, -48);
+
+                // Right Counterweight at arm distance
+                const rx = vals.arm * 22;
+                sctx.fillStyle = '#4ade80';
+                sctx.fillRect(rx - 15, -34, 30, 28);
+                sctx.fillText(`τ_kanan=${torqueRight}`, rx - 25, -40);
+                sctx.restore();
+            } else if (mapId === 'map4') {
+                // Impulse & Momentum Wave Barrier
+                const cx = w * 0.5;
+                const cy = h * 0.55;
+                sctx.fillStyle = '#38bdf8';
+                sctx.fillRect(40, cy - 30, 95, 60);
+                sctx.fillStyle = '#fff';
+                sctx.font = 'bold 11px monospace';
+                sctx.fillText('Δp = 3600', 50, cy + 4);
+
+                // Damper barrier thickness proportional to Δt
+                const padW = vals.time * 14;
+                sctx.fillStyle = solved ? '#4ade80' : '#f59e0b';
+                sctx.fillRect(cx + 20, cy - 42, padW, 84);
+                sctx.fillStyle = '#fef08a';
+                sctx.fillText(`Δt = ${vals.time}s | F = ${vals.force}N`, cx - 20, cy - 52);
+            } else if (mapId === 'map5') {
+                // Rotational Inertia & Angular Momentum Wheel
+                const cx = w * 0.5;
+                const cy = h * 0.52;
+                const radiusPx = vals.radius * 22;
+                sctx.save();
+                sctx.translate(cx, cy);
+                sctx.strokeStyle = solved ? '#4ade80' : '#fde047';
+                sctx.lineWidth = vals.mass * 0.8;
+                sctx.beginPath();
+                sctx.arc(0, 0, radiusPx, 0, Math.PI * 2);
+                sctx.stroke();
+
+                const I = 0.5 * vals.mass * vals.radius * vals.radius;
+                const L = I * vals.omega;
+                sctx.fillStyle = '#fef08a';
+                sctx.font = 'bold 11px monospace';
+                sctx.textAlign = 'center';
+                sctx.fillText(`I = ${I} kg·m² | ω = ${vals.omega} rad/s`, 0, -radiusPx - 18);
+                sctx.fillText(`Momentum Sudut L = ${L} kg·m²/s`, 0, radiusPx + 24);
+                sctx.restore();
+            }
+        }
+
+        function completeCurrentMapPuzzle() {
+            const mapData = MAPS_DATA[gameState.currentMapId];
+            if (!mapData) return;
+
+            mapData.completed = true;
+
+            // Unlock Next Region in sequence
+            const nextMapKey = `map${(mapData.order || 0) + 1}`;
+            if (MAPS_DATA[nextMapKey]) {
+                MAPS_DATA[nextMapKey].unlocked = true;
+            }
+
+            playSuccessChord();
+            closeLontarCakra();
+            updateHUD();
+            openDialogueModal(mapData);
+        }
+
+        function toggleWorldMapModal() {
+            const modal = document.getElementById('world-map-modal');
+            if (modal.classList.contains('hidden')) {
+                renderWorldMapNodes();
+                modal.classList.remove('hidden');
+                playGamelanTone(440, 0.2, 'sine');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function renderWorldMapNodes() {
+            const grid = document.getElementById('map-nodes-grid');
+            grid.innerHTML = '';
+
+            ['hub', 'map1', 'map2', 'map3', 'map4', 'map5'].forEach((id) => {
+                const m = MAPS_DATA[id];
+                const isCurrent = gameState.currentMapId === id;
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl border-2 flex flex-col justify-between gap-3 transition-all ${
+                    isCurrent
+                        ? 'bg-amber-900/50 border-yellow-400 shadow-lg'
+                        : m.unlocked
+                        ? 'bg-stone-900/90 border-amber-700/70 hover:border-amber-400'
+                        : 'bg-stone-950/70 border-stone-800 opacity-55'
+                }`;
+
+                const statusBadge = m.completed
+                    ? '<span class="text-[11px] px-2 py-0.5 rounded-full bg-emerald-900 text-emerald-200 border border-emerald-500 font-bold">✔ Selesai</span>'
+                    : m.unlocked
+                    ? '<span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-900 text-amber-200 border border-amber-500 font-bold">Terbuka</span>'
+                    : '<span class="text-[11px] px-2 py-0.5 rounded-full bg-stone-800 text-stone-400 border border-stone-600 font-bold">🔒 Terkunci</span>';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-1.5">
+                            <span class="text-2xl">${m.npcAvatar}</span>
+                            ${statusBadge}
+                        </div>
+                        <h3 class="font-nusantara text-sm sm:text-base text-amber-300 font-bold">${m.name}</h3>
+                        <p class="text-xs text-amber-100/80 mt-1"><strong>Tokoh:</strong> ${m.npcName}</p>
+                        <p class="text-xs text-amber-400/90 mt-0.5"><strong>Fisika:</strong> ${m.physicsTopic}</p>
+                        ${m.relicName ? `<p class="text-[11px] text-emerald-300 mt-1.5">🎁 Hadiah Pusaka: ${m.relicIcon} ${m.relicName}</p>` : ''}
+                    </div>
+                    <button onclick="loadMap('${m.id}')" ${!m.unlocked ? 'disabled' : ''} class="btn-wayang w-full py-2 rounded-lg text-xs font-bold mt-2">
+                        ${isCurrent ? '📍 Sedang Berada di Sini' : m.unlocked ? '⛵ Berlayar ke Wilayah Ini' : 'Selesaikan Map Sebelumnya'}
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openSaveInstructionModal() {
+            document.getElementById('save-modal').classList.remove('hidden');
+        }
+
+        function closeSaveInstructionModal() {
+            document.getElementById('save-modal').classList.add('hidden');
+        }
+
+        function downloadStandaloneGameFile() {
+            const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'arya_lontar_cakra.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadProgressJSON() {
+            const exportData = {
+                folderTarget: 'Game Fisika',
+                gameTitle: 'Arya & Lontar Cakra: Jagat Parahyangan',
+                savedAt: new Date().toISOString(),
+                crystalsCollected: gameState.crystalsCollected,
+                currentMapId: gameState.currentMapId,
+                regions: Object.keys(MAPS_DATA).map(k => ({
+                    id: k,
+                    name: MAPS_DATA[k].name,
+                    unlocked: MAPS_DATA[k].unlocked,
+                    completed: MAPS_DATA[k].completed
+                }))
+            };
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'progres_arya.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Keyboard Listeners
+        window.addEventListener('keydown', (e) => {
+            const code = e.code;
+            if (code === 'ArrowLeft' || code === 'KeyA') keys.left = true;
+            if (code === 'ArrowRight' || code === 'KeyD') keys.right = true;
+            if (code === 'ArrowUp' || code === 'KeyW' || code === 'Space') keys.jump = true;
+            if (code === 'KeyE') handleInteractKey();
+            if (code === 'KeyC' && gameState.currentMapId !== 'hub') openLontarCakra();
+            if (code === 'KeyM') toggleWorldMapModal();
+            if (code === 'Escape') {
+                closeDialogueModal();
+                closeLontarCakra();
+                closeSaveInstructionModal();
+                document.getElementById('world-map-modal').classList.add('hidden');
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            const code = e.code;
+            if (code === 'ArrowLeft' || code === 'KeyA') keys.left = false;
+            if (code === 'ArrowRight' || code === 'KeyD') keys.right = false;
+            if (code === 'ArrowUp' || code === 'KeyW' || code === 'Space') keys.jump = false;
+        });
+
+        // Mobile Touch Controls Binding
+        function bindHoldButton(btnId, keyName) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+            const start = (e) => { e.preventDefault(); keys[keyName] = true; };
+            const end = (e) => { e.preventDefault(); keys[keyName] = false; };
+            btn.addEventListener('mousedown', start);
+            btn.addEventListener('mouseup', end);
+            btn.addEventListener('mouseleave', end);
+            btn.addEventListener('touchstart', start, { passive: false });
+            btn.addEventListener('touchend', end, { passive: false });
+        }
+
+        bindHoldButton('btn-left', 'left');
+        bindHoldButton('btn-right', 'right');
+        bindHoldButton('btn-jump', 'jump');
+
+        // Main Game Loop
+        function gameLoop() {
+            updateGamePhysics();
+            renderGameWorld();
+            requestAnimationFrame(gameLoop);
+        }
+
+        window.onload = function () {
+            resizeCanvas();
+            loadMap('hub');
+            // Open initial welcome dialogue with Ki Dalang at Hub
+            setTimeout(() => openDialogueModal(MAPS_DATA.hub), 400);
+            gameLoop();
+        };
+    </script>
+</body>
+</html>
